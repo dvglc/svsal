@@ -335,6 +335,205 @@ declare function render:getFragmentFile ($targetWorkId as xs:string, $targetNode
 
 (: ####====---- End Helper Functions ----====#### :)
 
+declare
+    %public
+function render:AUTentry($node as node(), $model as map(*), $aid) {
+    render:AUTsummary(doc($config:tei-authors-root || "/" || $aid || ".xml")//tei:text)
+};
+
+declare
+function render:AUTsummary($node as node()) as item()* {
+    typeswitch($node)
+        case element(tei:teiHeader) return ()
+        case text() return $node
+        case comment() return $node
+        case element(tei:bibl) return 
+             let $getGetId :=  $node/@sortKey
+                return 
+                    if ($getGetId) then
+                        <span class="{('work hi_'||$getGetId)}">
+                        {if ($node/tei:title/@ref) then
+                            <a target="blank" href="{$node/tei:title/@ref}">{($node/text())}<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+                        else
+                            <i>{($node/text())}</i>}
+                        </span>    
+                        else()
+        case element(tei:birth) return 
+            <span>
+                *&#xA0;{local:AUTplaceNames($node) || ': ' || $node/tei:date[1]}
+            </span>
+        case element(tei:death) return 
+            <span>
+                †&#xA0;{local:AUTplaceNames($node) || ': '||$node/tei:date[1]}
+            </span>
+        case element(tei:head) return if ($node/@xml:id='overview') then () else 
+            <span>
+            <a class="anchor" name="{$node/parent::tei:div[1]/@xml:id}"></a>
+                <h3>
+                    <a class="anchorjs-link" href="{session:encode-url(xs:anyURI('author.html?aid=' || $node/ancestor::tei:TEI/@xml:id||'#'||$node/parent::tei:div[1]/@xml:id))}">
+                        <span class="anchorjs-icon"></span>
+                    </a>
+                {$node}</h3>
+            </span>
+        case element(tei:list) return
+            if ($node/tei:head) then
+                <div>
+                <h4>{local:AUTpassthru($node/tei:head)}</h4>
+                <ul class="list-group" style="list-style-type: disc;">
+                    {for $child in $node/tei:item
+                    return
+                    <li class="list-group-item">
+                        {local:AUTpassthru($child)}
+                    </li>}
+                </ul>
+                </div>    
+            else
+                <ul class="list-group" style="list-style-type: disc;">
+                    {for $child in $node/tei:item
+                    return
+                    <li class="list-group-item">
+                        {local:AUTpassthru($child)}
+                    </li>}
+                </ul>    
+        case element(tei:orgName) return 
+            let $lang := request:get-attribute('lang')
+            let $getCerlId      :=  if (starts-with($node/@ref, 'cerl:')) then replace($node/@ref/string(), "(cerl):(\d{11})*", "$2") else ()
+            let $CerlHighlight  :=  if (starts-with($node/@ref, 'cerl:')) then replace($node/@ref/string(), "(cerl):(\d{11})*", "$1$2") else ()
+                return 
+                    if (starts-with($node/@ref, 'cerl:')) then 
+                         <span class="{('persName hi_'||$CerlHighlight)}">
+                            <a target="_blank" href="{('http://thesaurus.cerl.org/cgi-bin/record.pl?rid='||$getCerlId)}">{$node||$config:nbsp}<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+                         </span>
+                    else
+                        <span>{$node/text()}</span>
+        case element(tei:p) return
+            <p class="autText">{local:AUTpassthru($node)}</p>
+        case element(tei:persName) return 
+            let $lang := request:get-attribute('lang')
+            let $getAutId       :=  if (starts-with($node/@ref, 'author:')) then substring($node/@ref/string(),8,5) else ()
+            let $getGndId       :=  if (starts-with($node/@ref, 'gnd:'))  then replace($node/@ref/string(), "(gnd):(\d{9})*", "$1/$2") else ()
+            let $GndHighlight   :=  if (starts-with($node/@ref, 'gnd:'))  then replace($node/@ref/string(), "(gnd):(\d{9})*", "$1$2") else ()
+            let $getCerlId      :=  if (starts-with($node/@ref, 'cerl:')) then replace($node/@ref/string(), "(cerl):(\d{11})*", "$2") else ()
+            let $CerlHighlight  :=  if (starts-with($node/@ref, 'cerl:')) then replace($node/@ref/string(), "(cerl):(\d{11})*", "$1$2") else ()
+                return 
+                    if ($node/tei:addName) then 
+                        <span>
+                            <h3>
+                               <a class="anchorjs-link" href="{session:encode-url(xs:anyURI('author.html?aid=' || $node/ancestor::tei:TEI/@xml:id||'#'||$node/ancestor::tei:div[1]/@xml:id||'AddNames'))}">
+                                   <span class="anchorjs-icon"></span>
+                               </a><i18n:text key="addName">Aliasnamen</i18n:text>
+                           </h3>
+                           <p class="autText">{local:AUTpassthru($node/tei:addName)}</p>
+                        </span>
+                    else if (starts-with($node/@ref, 'author:')) then
+                         <span class="{('persName hi_'||'author'||$getAutId)}">
+                             <a href="{session:encode-url(xs:anyURI('author.html?aid=' || $getAutId))}">{($node/text())}</a>
+                         </span> 
+                    else if (starts-with($node/@ref, 'cerl:')) then 
+                         <span class="{('persName hi_'||$CerlHighlight)}">
+                            <a target="_blank" href="{('http://thesaurus.cerl.org/cgi-bin/record.pl?rid='||$getCerlId)}">{($node/text())||$config:nbsp}<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+                         </span>
+                    else if (starts-with($node/@ref, 'gnd:')) then 
+                         <span class="{('persName hi_'||$GndHighlight)}">
+                            <a target="_blank" href="{('http://d-nb.info/'||$getGndId)}">{($node/text())||$config:nbsp}<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+                         </span>
+                    else
+                        <span>{$node/text()}</span>
+        case element(tei:person) return
+            <ul style="list-style-type: disc;">
+                {for $child in $node/* return
+                    <li>{local:AUTpassthru($child)}</li>}
+            </ul>
+        case element(tei:placeName) return
+            let $getGetId :=  substring($node/@ref/string(),7,7)
+            let $replaceGet :=  'http://www.getty.edu/vow/TGNFullDisplay?find=&amp;place=&amp;nation=&amp;english=Y&amp;subjectid='||$getGetId
+                return 
+                    if (starts-with($node/@ref, 'getty:')) then
+                        <span class="{('place hi_'||'getty'||$getGetId)}">
+                            <a target="blank" href="{$replaceGet}">{($node/text())||$config:nbsp}<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+                        </span>    
+                    else
+                        <span class="place">{($node/text())}</span>
+        case element(tei:quote) return
+            <span>»{local:AUTpassthru($node)}«</span>
+        case element(tei:state) return
+            <span>
+                 <p class="autText">{local:AUTpassthru($node)}</p> 
+            </span>
+         case element(tei:term) return   
+            let $getLemId:=  substring($node/@ref/string(),7,5) 
+                return
+                    if (starts-with($node/@ref, 'lemma:')) then
+                        <span class="{('term hi_'||'lemma'||$getLemId)}">
+                            <a href="{session:encode-url(xs:anyURI('lemma.html?aid=' || $getLemId))}">{($node/text())}</a>
+                        </span> 
+                    else()
+        default return local:AUTpassthru($node)
+};
+
+declare
+function local:AUTpassthru($nodes as node()*) as item()* {
+    for $node in $nodes/node() return render:AUTsummary($node)
+};
+
+declare
+function local:AUTplaceNames($node as node()) {
+    let $placesHTML :=  for $place in $node//tei:placeName
+                            let $getGetId   := substring($place/@ref,7,7)
+                            let $replaceGet :=  'http://www.getty.edu/vow/TGNFullDisplay?find=&amp;place=&amp;nation=&amp;english=Y&amp;subjectid=' || $getGetId
+                            return
+                                 <span class="{('place hi_'||'getty'||$getGetId)}">
+                                    <a target="blank" href="{$replaceGet}">
+                                        {$place || $config:nbsp}
+                                        <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+                                    </a>
+                                 </span>
+    return $placesHTML
+};
+
+
+
+declare
+function render:guidelines($node as node(), $model as map(*), $lang as xs:string) {
+    if ($lang eq 'de')  then
+        let $parameters :=  <parameters>
+                                <param name="exist:stop-on-warn" value="yes"/>
+                                <param name="exist:stop-on-error" value="yes"/>
+                                <param name="language" value="de"></param>
+                            </parameters>
+            return transform:transform(doc($config:app-root || "/resources/files/W_Head_general.xml")/tei:TEI//tei:div[@xml:id='guidelines-de'], doc(($config:app-root || "/resources/xsl/guidelines.xsl")), $parameters)
+    else if  ($lang eq 'en')  then 
+        let $parameters :=  <parameters>
+                                <param name="exist:stop-on-warn" value="yes"/>
+                                <param name="exist:stop-on-error" value="yes"/>
+                                <param name="language" value="en"></param>
+                            </parameters>
+            return transform:transform(doc($config:app-root || "/resources/files/W_Head_general.xml")/tei:TEI//tei:div[@xml:id='guidelines-en'], doc(($config:app-root || "/resources/xsl/guidelines.xsl")), $parameters)
+    else if  ($lang eq 'es')  then
+        let $parameters :=  <parameters>
+                                <param name="exist:stop-on-warn" value="yes"/>
+                                <param name="exist:stop-on-error" value="yes"/>
+                                <param name="language" value="es"></param>
+                            </parameters>
+        return transform:transform(doc($config:app-root || "/resources/files/W_Head_general.xml")/tei:TEI//tei:div[@xml:id='guidelines-es'], doc(($config:app-root || "/resources/xsl/guidelines.xsl")), $parameters)
+    else()
+};
+
+(: ------ Build paginator ------ :)
+declare
+function render:WRKpreparePagination($node as node(), $model as map(*), $wid as xs:string?, $lang as xs:string?) {
+    <ul id="later" class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="dropdownMenu1">
+    {
+        let $workId    :=  if ($wid) then $wid else $model("currentWork")/@xml:id
+        for $pb in doc($config:data-root || "/" || $workId || '_nodeIndex.xml')//sal:node[@type="pb"][not(starts-with(sal:title, 'sameAs'))][not(starts-with(sal:title, 'corresp'))]
+            let $fragment := $pb/sal:fragment
+            let $url      := 'work.html?wid=' || $workId || '&amp;frag=' || $fragment || '#' || concat('pageNo_', $pb/@n)
+            return 
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{$url}">{normalize-space($pb/sal:title)}</a></li>
+    }
+    </ul>
+};
+
 
 
 
