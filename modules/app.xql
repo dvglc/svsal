@@ -1,42 +1,69 @@
 xquery version "3.1";
 
-module namespace app         = "http://salamanca.school/ns/app";
-declare namespace exist      = "http://exist.sourceforge.net/NS/exist";
-declare namespace opensearch = "http://a9.com/-/spec/opensearch/1.1/";
-declare namespace output     = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare namespace rdf        = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace sal        = "http://salamanca.school/ns/sal";
-declare namespace session    = "http://exist-db.org/xquery/session";
-declare namespace srw        = "http://www.loc.gov/zing/srw/";
-declare namespace tei        = "http://www.tei-c.org/ns/1.0";
-declare namespace transform  = "http://exist-db.org/xquery/transform";
-declare namespace util       = "http://exist-db.org/xquery/util";
-declare namespace xhtml      = "http://www.w3.org/1999/xhtml";
-declare namespace xi         = "http://www.w3.org/2001/XInclude";
-import module namespace config    = "http://salamanca.school/ns/config"                at "config.xqm";
-import module namespace render    = "http://salamanca.school/ns/render"                at "render.xql";
-import module namespace sphinx    = "http://salamanca.school/ns/sphinx"                at "sphinx.xql";
-import module namespace console   = "http://exist-db.org/xquery/console";
-import module namespace functx    = "http://www.functx.com";
-import module namespace i18n      = "http://exist-db.org/xquery/i18n"        at "i18n.xql";
-import module namespace kwic      = "http://exist-db.org/xquery/kwic";
-import module namespace request   = "http://exist-db.org/xquery/request";
-import module namespace templates = "http://exist-db.org/xquery/templates";
-import module namespace iiif      = "http://salamanca.school/ns/iiif"                  at "iiif.xql";
-import module namespace util      = "http://salamanca.school/ns/util"                  at "util.xql";
+(:~ 
+ : App XQuery-Module
+ : This module contains the main application logic:
+ :   - ...
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
+module namespace app                = "http://salamanca.school/ns/app";
+
+declare namespace exist             = "http://exist.sourceforge.net/NS/exist";
+declare namespace opensearch        = "http://a9.com/-/spec/opensearch/1.1/";
+declare namespace output            = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare namespace rdf               = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace sal               = "http://salamanca.school/ns/sal";
+declare namespace session           = "http://exist-db.org/xquery/session";
+declare namespace srw               = "http://www.loc.gov/zing/srw/";
+declare namespace tei               = "http://www.tei-c.org/ns/1.0";
+declare namespace transform         = "http://exist-db.org/xquery/transform";
+declare namespace util              = "http://exist-db.org/xquery/util";
+declare namespace xhtml             = "http://www.w3.org/1999/xhtml";
+declare namespace xi                = "http://www.w3.org/2001/XInclude";
+import module namespace console     = "http://exist-db.org/xquery/console";
+import module namespace functx      = "http://www.functx.com";
+import module namespace kwic        = "http://exist-db.org/xquery/kwic";
+import module namespace request     = "http://exist-db.org/xquery/request";
+import module namespace templates   = "http://exist-db.org/xquery/templates";
+import module namespace config      = "http://salamanca.school/ns/config"           at "config.xqm";
+import module namespace i18n        = "http://exist-db.org/xquery/i18n"             at "i18n.xql";
+import module namespace iiif        = "http://salamanca.school/ns/iiif"             at "iiif.xql";
+import module namespace render      = "http://salamanca.school/ns/render"           at "render.xql";
+import module namespace sphinx      = "http://salamanca.school/ns/sphinx"           at "sphinx.xql";
+import module namespace stool       = "http://salamanca.school/ns/util"             at "stool.xql";
 
 
 (: ============ List functions =================
- : create lists, 
+ : create lists,
  : load datasets,
  : with javascript and without javascript function
  : order: datasets for js support: authors, lemmata and works (in alphabetical order)
  : then: for simple output (without js): authors, lemmata, news, working papers, works (in alphabetical order)
  :)
 
-(: --- Facets --- :)
+(: --- Facets ---
+ : Build strings for javascript to evaluate.
+ : In the cases of authors and lemmata,
+ :   they are inserted into authors.html, resp. dictionary.html.
+ : In the case of works, however,
+ :   they are pregenerated for the different languages on rendering and
+ :   written to data/works_de.xml etc.
+ :   From there they are inserted into works.html by the app:loadWRKfacets function.
+ :)
 declare
-function app:AUTfinalFacets ($node as node(), $model as map (*), $lang as xs:string?) {
+function app:AUTfinalFacets ($node as node(), $model as map (*), $lang as xs:string?) as xs:string {
     for $item in collection($config:tei-authors-root)//tei:TEI[.//tei:text/@type eq "author_article"]//tei:listPerson/tei:person[1]
         let $aid            :=  xs:string($item/ancestor::tei:TEI/@xml:id)
         let $authorUrl      :=  'author.html?aid=' || $aid
@@ -81,20 +108,20 @@ function app:AUTfinalFacets ($node as node(), $model as map (*), $lang as xs:str
                 || '"authorUrl":'        || '"' || $authorUrl         || '",'
                 || '"name":'             || '"' || $name              || '",' 
                 || '"status":'           || '"' || $status            || '",'
-                || '"sortName":'         || '"' || $sortName          || '",'        (:default sorting:)
-                || '"nameFacet":'        || '"' || $nameFacet         || '",'        (:facet I:)
+                || '"sortName":'         || '"' || $sortName          || '",'                                   (:default sorting:)
+                || '"nameFacet":'        || '"' || $nameFacet         || '",'                                   (:facet I:)
                 || '"birth":'            || '"' || $birth             || '",' 
                 || (if ($death) then             '"death":'            || '"' || $death             || '",' 
-                                              || '"deathFacet":'       || '"' || $deathFacet        || '",'        (:facet II:)
+                                              || '"deathFacet":'       || '"' || $deathFacet        || '",'     (:facet II:)
                     else ())
                 || (if ($ordersString) then      '"orders":'           || '"' || $ordersString      || '",'
-                                              || '"orderFacet":'       || '[' || $orderFacet        || '],'        (:facet III:)
+                                              || '"orderFacet":'       || '[' || $orderFacet        || '],'     (:facet III:)
                     else ())
                 || (if ($disciplinesString) then '"disciplines":'      || '"' || $disciplinesString || '",'
-                                              || '"disciplineFacet":'  || '[' || $disciplineFacet   || '],'        (:facet IV:) 
+                                              || '"disciplineFacet":'  || '[' || $disciplineFacet   || '],'     (:facet IV:) 
                     else ())
                 || (if ($placesString) then      '"places":'           || '"' || $placesString      || '",'
-                                              || '"placeFacet":'       || '[' || $placeFacet        || '],'        (:facet V:)
+                                              || '"placeFacet":'       || '[' || $placeFacet        || '],'     (:facet V:)
                     else ())
 
                 || '&#125;'  || ','
@@ -102,7 +129,7 @@ function app:AUTfinalFacets ($node as node(), $model as map (*), $lang as xs:str
 };
 
 declare
-function app:LEMfinalFacets ($node as node(), $model as map (*), $lang as xs:string?) {
+function app:LEMfinalFacets ($node as node(), $model as map (*), $lang as xs:string?) as xs:string {
     for $item in (collection($config:tei-lemmata-root)//tei:TEI[.//tei:text/@type eq "lemma_article"])
         let $title          :=  $item//tei:titleStmt/tei:title[@type='short']
         let $status         :=  $item//tei:revisionDesc/@status/string()
@@ -122,18 +149,18 @@ function app:LEMfinalFacets ($node as node(), $model as map (*), $lang as xs:str
         let $lemmaRefString :=  'lemma.html?lid=' || $getLemmaId
         return
                 '&#123;' 
-                || '"title":'                    || '"'|| $title          || '",'     (:default sorting:)
-                || '"titleFacet":'               || '"'|| $titleFacet     || '",' (:facet I:)
+                || '"title":'                    || '"'|| $title          || '",'       (:default sorting:)
+                || '"titleFacet":'               || '"'|| $titleFacet     || '",'       (:facet I:)
                 || '"status":'                   || '"'|| $status         || '",'
                 || '"author":'                   || '"'|| $author         || '",'
-                || '"sortName":'                 || '"'|| $sortName       || '",'     (:second sorting:)
-                || '"authorFacet":'              || '"'|| $authorFacet    || '",' (:facet II:)
+                || '"sortName":'                 || '"'|| $sortName       || '",'       (:second sorting:)
+                || '"authorFacet":'              || '"'|| $authorFacet    || '",'       (:facet II:)
                 || '"lemmaRefString":'           || '"'|| $lemmaRefString || '",'
                 || '&#125;' || ','
 };
 
 declare
-function app:WRKfinalFacets ($node as node(), $model as map (*), $lang as xs:string?) {
+function app:WRKfinalFacets ($node as node(), $model as map (*), $lang as xs:string?) as xs:string {
     for $item in (collection($config:tei-works-root)//tei:teiHeader[parent::tei:TEI//tei:text/@type = ("work_monograph", "work_multivolume")])
         let $wid            :=  xs:string($item/parent::tei:TEI/@xml:id)
         let $title          :=  $item//tei:monogr/tei:title[@type = 'short']
@@ -230,21 +257,22 @@ function app:WRKfinalFacets ($node as node(), $model as map (*), $lang as xs:str
         return $output
 };
 
+(: --- Facets: Load pre-built (faceted) work lists. --- :)
 declare
-function app:loadWRKfacets ($node as node(), $model as map (*), $lang as xs:string?) {
- if ($lang = 'de') then
-    doc($config:data-root || "/" || 'works_de.xml')/sal/text()
- else  if ($lang = 'en') then
-    doc($config:data-root || "/" || 'works_en.xml')/sal/text()
- else
-    doc($config:data-root || "/" || 'works_es.xml')/sal/text()
+function app:loadWRKfacets ($node as node(), $model as map (*), $lang as xs:string?) as xs:string {
+    if ($lang = 'de') then
+        doc($config:data-root || "/" || 'works_de.xml')/sal/text()
+    else  if ($lang = 'en') then
+        doc($config:data-root || "/" || 'works_en.xml')/sal/text()
+    else
+        doc($config:data-root || "/" || 'works_es.xml')/sal/text()
 };
 
 
-(:  ==== AUTHORS-LIST (no js) ====  :)
+(: --- AUTHORS-LIST (no js) --- :)
 declare
     %templates:wrap  
-function app:sortAUT ($node as node(), $model as map(*), $lang as xs:string?)  {
+function app:sortAUT ($node as node(), $model as map(*), $lang as xs:string?) as element(xhtml:span) {
     let $output := 
         <span>&#xA0;&#xA0;&#xA0;<span class="lead"><span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span> <i18n:text key="sort">Sortierung</i18n:text></span>
             <ul class="list-unstyled">
@@ -253,8 +281,8 @@ function app:sortAUT ($node as node(), $model as map(*), $lang as xs:string?)  {
                  <li><a href="{('authors.html?sort=death')}" role="button" class="btn btn-link"><i18n:text key="death">Todesdatum</i18n:text></a></li>
             </ul>
         </span>
-            return  i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", "en")                
-};        
+    return  i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", "en")                
+};
 
 declare
     %templates:wrap
@@ -300,7 +328,7 @@ function app:loadListOfAuthors($node as node(), $model as map(*), $sort as xs:st
 };
 
 
-(:  ==== LEMMATA-LIST (no js) ====  :)
+(: --- LEMMATA-LIST (no js) --- :)
 declare
     %templates:wrap  
 function app:sortLEM ($node as node(), $model as map(*), $lang as xs:string?)  {

@@ -5,7 +5,7 @@ declare namespace tei       = "http://www.tei-c.org/ns/1.0";
 
 import module namespace xmldb      = "http://exist-db.org/xquery/xmldb";
 import module namespace sm         = "http://exist-db.org/xquery/securitymanager";
-import module namespace render     = "http://salamanca/render"  at "modules/render.xql";
+import module namespace render     = "http://salamanca.school/ns/render"  at "modules/render.xql";
 
 (: The following external variables are set by the repo:deploy function :)
 (: the target collection into which the app is deployed :)

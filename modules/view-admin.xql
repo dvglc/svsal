@@ -1,20 +1,37 @@
-xquery version "3.0";
+xquery version "3.1";
 
-import module namespace app       = "http://salamanca/app"                       at "app.xql";
-import module namespace config    = "http://salamanca/config"                    at "config.xqm";
-import module namespace i18n      = "http://exist-db.org/xquery/i18n/templates"  at "i18n-templates.xql";
-import module namespace iiif      = "http://salamanca/iiif"                      at "iiif.xql";
-import module namespace rdf       = "http://salamanca/rdf"                       at "rdf.xql";
-import module namespace render    = "http://salamanca/render"                    at "render.xql";
-import module namespace net       = "http://salamanca/net"                       at "net.xql";
-import module namespace sphinx    = "http://salamanca/sphinx"                    at "sphinx.xql";
-import module namespace stats     = "http://salamanca/stats"                     at "stats.xql";
-import module namespace functx    = "http://www.functx.com"                      at "/db/system/repo/functx-1.0/functx/functx.xql";
-import module namespace templates = "http://exist-db.org/xquery/templates" ;
-import module namespace request   = "http://exist-db.org/xquery/request";
+(:~ 
+ : View-admin XQuery executable
+ : This file contains exist-db's templating logic, for admin pages:
+ :   - ...
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
 import module namespace console   = "http://exist-db.org/xquery/console";
-
-import module namespace admin     = "http://salamanca/admin"                     at "admin.xql";
+import module namespace functx    = "http://www.functx.com" (: at "/db/system/repo/functx-1.0/functx/functx.xql" :) ;
+import module namespace request   = "http://exist-db.org/xquery/request";
+import module namespace templates = "http://exist-db.org/xquery/templates" ;
+import module namespace admin     = "http://salamanca.school/ns/admin"              at "admin.xql";
+import module namespace app       = "http://salamanca.school/ns/app"                at "app.xql";
+import module namespace config    = "http://salamanca.school/ns/config"             at "config.xqm";
+import module namespace i18n      = "http://exist-db.org/xquery/i18n/templates"     at "i18n-templates.xql";
+import module namespace iiif      = "http://salamanca.school/ns/iiif"               at "iiif.xql";
+import module namespace rdf       = "http://salamanca.school/ns/rdf"                at "rdf.xql";
+import module namespace render    = "http://salamanca.school/ns/render"             at "render.xql";
+import module namespace net       = "http://salamanca.school/ns/net"                at "net.xql";
+import module namespace sphinx    = "http://salamanca.school/ns/sphinx"             at "sphinx.xql";
+import module namespace stats     = "http://salamanca.school/ns/stats"              at "stats.xql";
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare option output:method "html5";

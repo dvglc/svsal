@@ -28,8 +28,8 @@ declare namespace exist                 = "http://exist.sourceforge.net/NS/exist
 declare namespace httpclient            = "http://exist-db.org/xquery/httpclient";
 declare namespace srw                   = "http://www.loc.gov/zing/srw/";
 declare namespace tei                   = "http://www.tei-c.org/ns/1.0";
+declare namespace test                  = "http://exist-db.org/xquery/xqsuite";
 import module namespace config          = "http://salamanca.school/ns/config"                at "config.xqm";
-
 
 (:~
  : format list of name TEI elements as a continuous string: family name, "comma", given name, separated by ampersands.
@@ -38,7 +38,8 @@ import module namespace config          = "http://salamanca.school/ns/config"   
  :  @return the string of person's names if succesful, the empty sequence otherwise
 ~:)
 declare
-    %test:arg("persName", <tei:persName key="Bar,   Foo ">Bla</tei:persName>) %test:assertEquals("Bar, Foo")
+    %test:arg("persName", <tei:persName key="Bar,   Foo ">Bla</tei:persName>)
+    %test:assertEquals("Bar, Foo")
 function stool:formatName($persName as element()*) as xs:string? {
     let $return-string := for $pers in $persName
                                 return
@@ -60,7 +61,8 @@ function stool:formatName($persName as element()*) as xs:string? {
  :  @return the string of person's names if succesful, the empty sequence otherwise
 ~:)
 declare
-    %test:arg("persName", <tei:persName key="Bar,   Foo "><tei:forename>Foo</tei:forename><tei:surname>Bar</tei:surname></tei:persName>) %test:assertEquals("Foo Bar")
+    %test:arg("persName", <tei:persName key="Bar,   Foo "><tei:forename>Foo</tei:forename><tei:surname>Bar</tei:surname></tei:persName>)
+    %test:assertEquals("Foo Bar")
 function stool:rotateFormatName($persName as element()*) as xs:string? {
     let $return-string := for $pers in $persName
                                 return
@@ -90,7 +92,8 @@ function stool:resolvePersname($persName as element()*) {
 };
 
 (: Todo: Do we need the following? :)
-declare function stool:resolveURI($string as xs:string*) {
+declare
+function stool:resolveURI($string as xs:string*) {
     let $tei2htmlXslt   := doc($config:app-root || '/resources/xsl/extract_elements.xsl')
     for $id in $string
         let $doc := <div><a xml:id="{$id}" ref="#{id}">dummy</a></div>
@@ -102,7 +105,8 @@ declare function stool:resolveURI($string as xs:string*) {
                     return xs:string(transform:transform($doc, $tei2htmlXslt, $xsl-parameters))
 };
 
-declare function stool:sectionTitle ($targetWork as node()*, $targetNode as node()) {
+declare
+function stool:sectionTitle ($targetWork as node()*, $targetNode as node()) {
     let $targetWorkId := string($targetWork/tei:TEI/@xml:id)
     let $targetNodeId := string($targetNode/@xml:id)
     return normalize-space(
@@ -213,8 +217,7 @@ function local:docSubjectname($id as xs:string) as xs:string? {
             default return ()
 };
 
-
-declare 
+declare
     %templates:wrap
  function stool:test($node as node(), $model as map(*), $lang as xs:string?) {
         <p>

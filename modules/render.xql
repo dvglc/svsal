@@ -1,30 +1,65 @@
-xquery version "3.0";
+xquery version "3.1";
 
-module namespace render            = "http://salamanca/render";
+(:~ 
+ : Render XQuery-Module
+ : This module contains data rendering functions:
+ :  - typeswitch functions converting tei xml elements to html or plaintext
+ :  - other...
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
+module namespace render            = "http://salamanca.school/ns/render";
+
 declare namespace exist            = "http://exist.sourceforge.net/NS/exist";
 declare namespace output           = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare namespace sal              = "http://salamanca.school/ns/sal";
 declare namespace tei              = "http://www.tei-c.org/ns/1.0";
-declare namespace sal              = "http://salamanca.adwmainz.de";
+import module namespace console    = "http://exist-db.org/xquery/console";
+import module namespace functx     = "http://www.functx.com";
 import module namespace request    = "http://exist-db.org/xquery/request";
 import module namespace templates  = "http://exist-db.org/xquery/templates";
-import module namespace xmldb      = "http://exist-db.org/xquery/xmldb";
-import module namespace util       = "http://exist-db.org/xquery/util";
-import module namespace console    = "http://exist-db.org/xquery/console";
-import module namespace config     = "http://salamanca/config" at "config.xqm";
-import module namespace app        = "http://salamanca/app"    at "app.xql";
-import module namespace functx     = "http://www.functx.com";
 import module namespace transform  = "http://exist-db.org/xquery/transform";
+import module namespace util       = "http://exist-db.org/xquery/util";
+import module namespace xmldb      = "http://exist-db.org/xquery/xmldb";
+import module namespace app        = "http://salamanca.school/ns/app"           at "app.xql";
+import module namespace config     = "http://salamanca.school/ns/config"        at "config.xqm";
 
-(:declare option exist:serialize       "method=html5 media-type=text/html indent=no";:)
+(: declare option exist:serialize       "method=html5 media-type=text/html indent=no";:)
+
+(: FIXME: Still left to be implemented: titlePage, titlePart, docTitle, text, choice, lg, l, and author fields: state etc. :)
+(: Todo: :)
+(:
+   ✓ Fix lbs
+   ✓ Fix pbs not to include sameAs pagebreaks
+   ✓ Fix milestones and notes to have divs as predecessors, not p's
+   - Add head,
+         ref,
+         reg,
+         corr,
+         ...?
+:)
 
 (: ####====---- Helper Functions ----====#### :)
 
-declare function render:authorString($node as node(), $model as map(*), $lang as xs:string?) {
+declare
+function render:authorString($node as node(), $model as map(*), $lang as xs:string?) {
     let $currentAuthorId  := $model('currentAuthor')/@xml:id/string()
     return <td><a href="author.html?aid={$currentAuthorId}">{$currentAuthorId} - {app:AUTname($node, $model)}</a></td>
 };
 
-declare function render:authorMakeHTML($node as node(), $model as map(*)) {
+declare
+function render:authorMakeHTML($node as node(), $model as map(*)) {
     let $currentAuthorId := $model('currentAuthor')/@xml:id/string()
     return if (render:needsRender($currentAuthorId)) then
                 <td title="source from: {string(xmldb:last-modified($config:tei-authors-root, $currentAuthorId || '.xml'))}{if (xmldb:collection-available($config:temp) and xmldb:get-child-resources($config:temp) = $currentAuthorId || ".html") then concat(', rendered on: ', xmldb:last-modified($config:temp, $currentAuthorId || ".html")) else ()}"><a href="renderTheRest.html?aid={$currentAuthorId}"><b>Render NOW!</b></a></td>
@@ -32,12 +67,14 @@ declare function render:authorMakeHTML($node as node(), $model as map(*)) {
                 <td title="source from: {string(xmldb:last-modified($config:tei-authors-root, $currentAuthorId || '.xml'))}, Rendered on: {xmldb:last-modified($config:temp, $currentAuthorId || '.html')}">Rendering unnecessary. <small><a href="renderTheRest.html?aid={$currentAuthorId}">Render anyway!</a></small></td>
 };
 
-declare function render:lemmaString($node as node(), $model as map(*), $lang as xs:string?) {
+declare
+function render:lemmaString($node as node(), $model as map(*), $lang as xs:string?) {
     let $currentLemmaId  := string($model('currentLemma')/@xml:id)
     return <td><a href="lemma.html?lid={$currentLemmaId}">{$currentLemmaId} - {app:LEMtitle($node, $model)}</a></td>
 };
 
-declare function render:lemmaMakeHTML($node as node(), $model as map(*)) {
+declare
+function render:lemmaMakeHTML($node as node(), $model as map(*)) {
     let $currentLemmaId := string($model('currentLemma')/@xml:id)
     return if (render:needsRender($currentLemmaId)) then
                 <td title="source from: {string(xmldb:last-modified($config:tei-lemmata-root, $currentLemmaId || '.xml'))}{if (xmldb:collection-available($config:temp) and xmldb:get-child-resources($config:temp) = $currentLemmaId || ".html") then concat(', rendered on: ', xmldb:last-modified($config:temp, $currentLemmaId || ".html")) else ()}"><a href="renderTheRest.html?lid={$currentLemmaId}"><b>Render NOW!</b></a></td>
@@ -45,12 +82,14 @@ declare function render:lemmaMakeHTML($node as node(), $model as map(*)) {
                 <td title="source from: {string(xmldb:last-modified($config:tei-lemmata-root, $currentLemmaId || '.xml'))}, Rendered on: {xmldb:last-modified($config:temp, $currentLemmaId || ".html")}">Rendering unnecessary. <small><a href="renderTheRest.html?lid={$currentLemmaId}">Render anyway!</a></small></td>
 };
            
-declare function render:WPString($node as node(), $model as map(*), $lang as xs:string?) {
+declare
+function render:WPString($node as node(), $model as map(*), $lang as xs:string?) {
     let $currentWPId  := string($model('currentWp')/@xml:id)
     return <td><a href="workingPaper.html?wpid={$currentWPId}">{$currentWPId} - {app:WPtitle($node, $model)}</a></td>
 };
 
-declare function render:needsRender($targetWorkId as xs:string) as xs:boolean {
+declare
+function render:needsRender($targetWorkId as xs:string) as xs:boolean {
     let $targetSubcollection := for $subcollection in $config:tei-sub-roots return 
                                     if (doc-available(concat($subcollection, '/', $targetWorkId, '.xml'))) then $subcollection
                                     else ()
@@ -74,12 +113,14 @@ declare function render:needsRender($targetWorkId as xs:string) as xs:boolean {
             true()
 };
 
-declare function render:workString($node as node(), $model as map(*), $lang as xs:string?) {
+declare
+function render:workString($node as node(), $model as map(*), $lang as xs:string?) {
     let $currentWorkId  := string($model('currentWork')/@xml:id)
     return <td><a href="{$config:webserver}/en/work.html?wid={$currentWorkId}">{$currentWorkId}: {app:WRKauthor($node, $model)} - {app:WRKtitleShort($node, $model)}</a></td>
 };
 
-declare function render:needsRenderString($node as node(), $model as map(*)) {
+declare
+function render:needsRenderString($node as node(), $model as map(*)) {
     let $currentWorkId := string($model('currentWork')/@xml:id)
     return if (render:needsRender($currentWorkId)) then
                     <td title="Source from: {string(xmldb:last-modified($config:tei-works-root, $currentWorkId || '.xml'))}{if (xmldb:get-child-resources($config:data-root) = $currentWorkId || "_nodeIndex.xml") then concat(', rendered on: ', xmldb:last-modified($config:data-root, $currentWorkId || "_nodeIndex.xml")) else ()}"><a href="render.html?wid={$currentWorkId}"><b>Render NOW!</b></a></td>
@@ -87,8 +128,8 @@ declare function render:needsRenderString($node as node(), $model as map(*)) {
                     <td title="Source from: {string(xmldb:last-modified($config:tei-works-root, $currentWorkId || '.xml'))}, rendered on: {xmldb:last-modified($config:data-root, $currentWorkId || "_nodeIndex.xml")}">Rendering unnecessary. <small><a href="render.html?wid={$currentWorkId}">Render anyway!</a></small></td>
 };
 
-
-declare function render:needsCorpusZipString($node as node(), $model as map(*)) {
+declare
+function render:needsCorpusZipString($node as node(), $model as map(*)) {
     let $worksModTime := max(for $work in xmldb:get-child-resources($config:tei-works-root) return xmldb:last-modified($config:tei-works-root, $work))    
     let $needsCorpusZip := if (util:binary-doc-available($config:files-root || '/sal-tei-corpus.zip')) then
                 let $resourceModTime := xmldb:last-modified($config:files-root, 'sal-tei-corpus.zip')
@@ -103,19 +144,8 @@ declare function render:needsCorpusZipString($node as node(), $model as map(*)) 
     
 };
 
-
-(: Todo: :)
-(:
-   ✓ Fix lbs
-   ✓ Fix pbs not to include sameAs pagebreaks
-   ✓ Fix milestones and notes to have divs as predecessors, not p's
-   - Add head,
-         ref,
-         reg,
-         corr,
-         ...?
-:)
-declare function render:getCrumbtrail ($targetWork as node()*, $targetNode as node(), $mode as xs:string) {
+declare
+function render:getCrumbtrail ($targetWork as node()*, $targetNode as node(), $mode as xs:string) {
     let $targetWorkId   := string($targetWork/@xml:id)
     let $targetNodeId   := string($targetNode/@xml:id)
     let $node           :=       if ($mode = 'html') then
@@ -159,7 +189,8 @@ declare function render:getCrumbtrail ($targetWork as node()*, $targetNode as no
                                                        string(count($targetNode/preceding::tei:item intersect $targetNode/ancestor::tei:list[1]//tei:item) + 1)
                                         case element(tei:list)
                                             return if($targetNode/@type = ('dict', 'index', 'summaries')) then               (: dictionaries, indices and summaries get their type prepended to their number :) 
-(:                                            return if($targetNode/@type = ('dict', 'index')) then               (\: dictionaries and indices get their type prepended to their number :\):)
+  (:                                            return if($targetNode/@type = ('dict', 'index')) then               (\: dictionaries and indices get their type prepended to their number :\)
+  :)
                                                        concat($targetNode/@type, string(count($targetNode/preceding::tei:list[@type = ('dict', 'index', 'summaries')] intersect
                                                                                                                                               $targetNode/(
                                                                                                                                                            ancestor::tei:div   |
@@ -203,7 +234,8 @@ declare function render:getCrumbtrail ($targetWork as node()*, $targetNode as no
                                                                         else ()
                                                                         )
                                                             )
-(: Other section types (e.g. ps and divs) are identified by number :)
+  (: Other section types (e.g. ps and divs) are identified by number
+  :)
                                         default
                                             return string(count(
                                                                  $targetNode/preceding-sibling::tei:div[@type ne "work_part"]  |
@@ -302,13 +334,15 @@ declare function render:getCrumbtrail ($targetWork as node()*, $targetNode as no
     return $crumbtrail
 };
 
-declare function render:mkAnchor ($targetWork as node()*, $targetNode as node()) {
+declare
+function render:mkAnchor ($targetWork as node()*, $targetNode as node()) {
     let $targetWorkId := string($targetWork/tei:TEI/@xml:id)
     let $targetNodeId := string($targetNode/@xml:id)
     return <a href="{render:mkUrl($targetWork, $targetNode)}">{app:sectionTitle($targetWork, $targetNode)}</a>    
 };
 
-declare function render:mkUrl ($targetWork as node(), $targetNode as node()) {
+declare
+function render:mkUrl ($targetWork as node(), $targetNode as node()) {
     let $targetWorkId := string($targetWork/@xml:id)
     let $targetNodeId := string($targetNode/@xml:id)
     let $viewerPage   :=      if (substring($targetWorkId, 1, 2) eq "W0") then
@@ -329,11 +363,13 @@ declare function render:mkUrl ($targetWork as node(), $targetNode as node()) {
     return concat($viewerPage, $targetWorkId, (if ($frag) then concat('&amp;frag=', $frag) else ()), '#', $targetNodeHTMLAnchor)
 };
 
-declare function render:getFragmentFile ($targetWorkId as xs:string, $targetNodeId as xs:string) {
+declare
+function render:getFragmentFile ($targetWorkId as xs:string, $targetNodeId as xs:string) {
     doc($config:data-root || '/' || $targetWorkId || '_nodeIndex.xml')//sal:node[@n = $targetNodeId][1]/sal:fragment/text()
 };
 
 (: ####====---- End Helper Functions ----====#### :)
+
 
 declare
     %public
@@ -491,8 +527,6 @@ function local:AUTplaceNames($node as node()) {
     return $placesHTML
 };
 
-
-
 declare
 function render:guidelines($node as node(), $model as map(*), $lang as xs:string) {
     if ($lang eq 'de')  then
@@ -520,6 +554,7 @@ function render:guidelines($node as node(), $model as map(*), $lang as xs:string
 };
 
 (: ------ Build paginator ------ :)
+
 declare
 function render:WRKpreparePagination($node as node(), $model as map(*), $wid as xs:string?, $lang as xs:string?) {
     <ul id="later" class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="dropdownMenu1">
@@ -534,14 +569,11 @@ function render:WRKpreparePagination($node as node(), $model as map(*), $wid as 
     </ul>
 };
 
-
-
-
 (: ####====---- Actual Rendering Typeswitch Functions ----====#### :)
 
-
 (: $mode can be "orig", "edit" (both being plain text modes), "html" or, even more sophisticated, "work" :)
-declare function render:dispatch($node as node(), $mode as xs:string) {
+declare
+function render:dispatch($node as node(), $mode as xs:string) {
     typeswitch($node)
     (: Try to sort the following nodes based (approx.) on frequency of occurences, so fewer checks are needed. :)
         case text()                 return local:text($node, $mode)
@@ -596,7 +628,8 @@ declare function render:dispatch($node as node(), $mode as xs:string) {
         default return local:passthru($node, $mode)
 };
 
-declare function local:text($node as node(), $mode as xs:string) {
+declare
+function local:text($node as node(), $mode as xs:string) {
     if ($mode = ("orig", "edit", "html", "work")) then
         let $leadingSpace   := if (matches($node, '^\s+')) then ' ' else ()
         let $trailingSpace  := if (matches($node, '\s+$')) then ' ' else ()
@@ -606,12 +639,14 @@ declare function local:text($node as node(), $mode as xs:string) {
     else ()
 };
 
-declare function local:passthru($nodes as node()*, $mode as xs:string) as item()* {
-(:    for $node in $nodes/node() return element {name($node)} {($node/@*, local:dispatch($node, $mode))}:)
+declare
+function local:passthru($nodes as node()*, $mode as xs:string) as item()* {
+  (:    for $node in $nodes/node() return element {name($node)} {($node/@*, local:dispatch($node, $mode))}:)
     for $node in $nodes/node() return render:dispatch($node, $mode)
 };
 
-declare function local:break($node as element(), $mode as xs:string) {
+declare
+function local:break($node as element(), $mode as xs:string) {
     if ($mode = ("orig", "edit", "html", "work")) then
         if (not($node/@break = 'no')) then
             ' '
@@ -619,7 +654,8 @@ declare function local:break($node as element(), $mode as xs:string) {
     else ()         (: some sophisticated function to insert a pipe and a pagenumber div in the margin :)
 };
 
-declare function local:linebreak($node as element(), $mode as xs:string) {
+declare
+function local:linebreak($node as element(), $mode as xs:string) {
     if ($mode = ("orig", "edit", "work")) then
         if (not($node/@break = 'no')) then
             ' '
@@ -629,7 +665,8 @@ declare function local:linebreak($node as element(), $mode as xs:string) {
     else () 
 };
 
-declare function local:p($node as element(tei:p), $mode as xs:string) {
+declare
+function local:p($node as element(tei:p), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         if ($node/ancestor::tei:note) then
             if ($node/following-sibling::tei:p) then
@@ -655,7 +692,8 @@ declare function local:p($node as element(tei:p), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:note($node as element(tei:note), $mode as xs:string) {
+declare
+function local:note($node as element(tei:note), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         ($config:nl, "        {", local:passthru($node, $mode), "}", $config:nl)
     else if ($mode = ("html", "work")) then
@@ -675,19 +713,20 @@ declare function local:note($node as element(tei:note), $mode as xs:string) {
         local:passthru($node, $mode)
 };
 
-declare function local:div($node as element(tei:div), $mode as xs:string) {
+declare
+function local:div($node as element(tei:div), $mode as xs:string) {
     if ($mode = "orig") then
          ($config:nl, local:passthru($node, $mode), $config:nl)
     else if ($mode = "edit") then
         if ($node/@n and not(matches($node/@n, '^[0-9]+$'))) then
             (concat($config:nl, '[ *', string($node/@n), '* ]'), $config:nl, local:passthru($node, $mode), $config:nl)
-(: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
+  (: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
         else
             ($config:nl, local:passthru($node, $mode), $config:nl)
     else if ($mode = "html") then
         if ($node/@n and not(matches($node/@n, '^[0-9]+$'))) then
             (<h4 id="{$node/@xml:id}">{string($node/@n)}</h4>,<p id="p_{$node/@xml:id}">{local:passthru($node, $mode)}</p>)
-(: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
+  (: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
         else
             <div id="{$node/@xml:id}">{local:passthru($node, $mode)}</div>
     else if ($mode = "work") then     (: basically, the same except for eventually adding a <div class="summary_title"/> the data for which is complicated to retrieve :)
@@ -695,7 +734,9 @@ declare function local:div($node as element(tei:div), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:milestone($node as element(tei:milestone), $mode as xs:string) {
+
+declare
+function local:milestone($node as element(tei:milestone), $mode as xs:string) {
     if ($mode = "orig") then
         if ($node/@rendition = '#dagger') then
             '†'
@@ -708,7 +749,7 @@ declare function local:milestone($node as element(tei:milestone), $mode as xs:st
             concat('[', string($node/@n), ']')
         else if ($node/@n and matches($node/@n, '^[0-9]+$')) then
             concat('[',  string($node/@unit), ' ', string($node/@n), ']')
-(: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
+  (: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
         else
             '[*]'
     else if ($mode = "html") then
@@ -721,7 +762,7 @@ declare function local:milestone($node as element(tei:milestone), $mode as xs:st
                             <div class="summary_title" id="{string($node/@xml:id)}">{string($node/@n)}</div>
                         else if ($node/@n and matches($node/@n, '^[0-9]+$')) then
                             <div class="summary_title" id="{string($node/@xml:id)}">{concat(string($node/@unit), ' ', string($node/@n))}</div>
-(: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
+  (: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
                         else ()
         return ($anchor, $summary)
     else if ($mode = "work") then ()    (: basically, the same except for eventually adding a <div class="summary_title"/> :)
@@ -729,8 +770,9 @@ declare function local:milestone($node as element(tei:milestone), $mode as xs:st
 };
 
 (: FIXME: In the following, the #anchor does not take account of html partitioning of works. Change this to use semantic section id's. :)
-declare function local:head($node as element(tei:head), $mode as xs:string) {
-(:if ($node/@xml:id='overview') then ():)
+declare
+function local:head($node as element(tei:head), $mode as xs:string) {
+  (:if ($node/@xml:id='overview') then ():)
     if ($mode = ("orig", "edit")) then
         (local:passthru($node, $mode), $config:nl)
     else if ($mode = ("html", "work")) then
@@ -752,7 +794,8 @@ declare function local:head($node as element(tei:head), $mode as xs:string) {
         local:passthru($node, $mode)
 };
 
-declare function local:orig($node as element(), $mode as xs:string) {
+declare
+function local:orig($node as element(), $mode as xs:string) {
     if ($mode = "orig") then
         local:passthru($node, $mode)
     else if ($mode = "edit") then
@@ -770,7 +813,9 @@ declare function local:orig($node as element(), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:edit($node as element(), $mode as xs:string) {
+
+declare
+function local:edit($node as element(), $mode as xs:string) {
     if ($mode = "orig") then ()
     else if ($mode = "edit") then
         local:passthru($node, $mode)
@@ -782,7 +827,9 @@ declare function local:edit($node as element(), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:g($node as element(tei:g), $mode as xs:string) {
+
+declare
+function local:g($node as element(tei:g), $mode as xs:string) {
     if ($mode="orig") then
         let $glyph := $node/ancestor::tei:TEI//tei:char[@xml:id = substring(string($node/@ref), 2)]
         return if ($glyph/tei:mapping[@type = 'precomposed']) then
@@ -809,7 +856,8 @@ declare function local:g($node as element(tei:g), $mode as xs:string) {
 };
 
 (: FIXME: In the following, work mode functionality has to be added - also paying attention to intervening pagebreak marginal divs :)
-declare function local:term($node as element(tei:term), $mode as xs:string) {
+declare
+function local:term($node as element(tei:term), $mode as xs:string) {
     if ($mode = "orig") then
         local:passthru($node, $mode)
     else if ($mode = "edit") then
@@ -842,7 +890,9 @@ declare function local:term($node as element(tei:term), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:name($node as element(*), $mode as xs:string) {
+
+declare
+function local:name($node as element(*), $mode as xs:string) {
     if ($mode = "orig") then
         local:passthru($node, $mode)
     else if ($mode = "edit") then
@@ -886,8 +936,9 @@ declare function local:name($node as element(*), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
+
 (: titles are dealt with using the general name function above...
-declare function local:title($node as element(tei:title), $mode as xs:string) {
+  declare function local:title($node as element(tei:title), $mode as xs:string) {
     if ($mode = "orig") then
         local:passthru($node, $mode)
     else if ($mode = "edit") then
@@ -902,8 +953,11 @@ declare function local:title($node as element(tei:title), $mode as xs:string) {
              <span class="bibl-title">{local:passthru($node, $mode)}</span>
     else
         local:passthru($node, $mode)
-};:)
-declare function local:bibl($node as element(tei:bibl), $mode as xs:string) {
+  };
+:)
+
+declare
+function local:bibl($node as element(tei:bibl), $mode as xs:string) {
     if ($mode = "orig") then
         local:passthru($node, $mode)
     else if ($mode = "edit") then
@@ -923,8 +977,8 @@ declare function local:bibl($node as element(tei:bibl), $mode as xs:string) {
         local:passthru($node, $mode)
 };
 
-
-declare function local:emph($node as element(tei:emph), $mode as xs:string) {
+declare
+function local:emph($node as element(tei:emph), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         local:passthru($node, $mode)
     else if ($mode = "work") then
@@ -934,7 +988,9 @@ declare function local:emph($node as element(tei:emph), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:hi($node as element(tei:hi), $mode as xs:string) {
+
+declare
+function local:hi($node as element(tei:hi), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         local:passthru($node, $mode)
     else if ($mode = ("html", "work")) then
@@ -981,7 +1037,9 @@ declare function local:hi($node as element(tei:hi), $mode as xs:string) {
     else 
         local:passthru($node, $mode)
 };
-declare function local:ref($node as element(tei:ref), $mode as xs:string) {
+
+declare
+function local:ref($node as element(tei:ref), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         local:passthru($node, $mode)
     else if ($mode = "html" and $node/@type = "url") then
@@ -994,7 +1052,9 @@ declare function local:ref($node as element(tei:ref), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:soCalled($node as element(tei:soCalled), $mode as xs:string) {
+
+declare
+function local:soCalled($node as element(tei:soCalled), $mode as xs:string) {
     if ($mode=("orig", "edit")) then
         ("'", local:passthru($node, $mode), "'")
     else if ($mode = ("html", "work")) then
@@ -1002,7 +1062,9 @@ declare function local:soCalled($node as element(tei:soCalled), $mode as xs:stri
     else
         ("'", local:passthru($node, $mode), "'")
 };
-declare function local:quote($node as element(tei:quote), $mode as xs:string) {
+
+declare
+function local:quote($node as element(tei:quote), $mode as xs:string) {
     if ($mode=("orig", "edit")) then
         ('"', local:passthru($node, $mode), '"')
     else if ($mode = ("html", "work")) then
@@ -1011,13 +1073,14 @@ declare function local:quote($node as element(tei:quote), $mode as xs:string) {
         ('"', local:passthru($node, $mode), '"')
 };
 
-declare function local:list($node as element(tei:list), $mode as xs:string) {
+declare
+function local:list($node as element(tei:list), $mode as xs:string) {
     if ($mode = "orig") then
         ($config:nl, local:passthru($node, $mode), $config:nl)
     else if ($mode = "edit") then
         if ($node/@n and not(matches($node/@n, '^[0-9]+$'))) then
             (concat($config:nl, ' [*', string($node/@n), '*]', $config:nl), local:passthru($node, $mode), $config:nl)
-(: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
+  (: oder das hier?:   <xsl:value-of select="key('targeting-refs', concat('#',@xml:id))[1]"/> :)
         else
             ($config:nl, local:passthru($node, $mode), $config:nl)
     else if ($mode = ("html", "work")) then
@@ -1069,7 +1132,9 @@ declare function local:list($node as element(tei:list), $mode as xs:string) {
     else
         ($config:nl, local:passthru($node, $mode), $config:nl)
 };
-declare function local:item($node as element(tei:item), $mode as xs:string) {
+
+declare
+function local:item($node as element(tei:item), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         let $leader :=  if ($node/parent::tei:list/@type = "numbered") then
                             '#' || $config:nbsp
@@ -1086,7 +1151,9 @@ declare function local:item($node as element(tei:item), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:gloss($node as element(tei:gloss), $mode as xs:string) {
+
+declare
+function local:gloss($node as element(tei:gloss), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         local:passthru($node, $mode)
     else if ($mode = ("html", "work")) then
@@ -1094,7 +1161,9 @@ declare function local:gloss($node as element(tei:gloss), $mode as xs:string) {
     else
         local:passthru($node, $mode)
 };
-declare function local:eg($node as element(tei:eg), $mode as xs:string) {
+
+declare
+function local:eg($node as element(tei:eg), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         local:passthru($node, $mode)
     else if ($mode = ("html", "work")) then
@@ -1103,22 +1172,20 @@ declare function local:eg($node as element(tei:eg), $mode as xs:string) {
         local:passthru($node, $mode)
 };
 
-
-declare function local:birth($node as element(), $mode as xs:string) {
+declare
+function local:birth($node as element(), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         local:passthru($node, $mode)
     else if ($mode = ("html", "work")) then
         <span>*&#xA0;{local:name($node/tei:placeName[1], $mode) || ': ' || $node/tei:date[1]}</span>
     else ()
 };
-declare function local:death($node as element(), $mode as xs:string) {
+
+declare
+function local:death($node as element(), $mode as xs:string) {
     if ($mode = ("orig", "edit")) then
         local:passthru($node, $mode)
     else if ($mode = ("html", "work")) then
         <span>†&#xA0;{local:name($node/tei:placeName[1], $mode) || ': ' || $node/tei:date[1]}</span>
     else ()
 };
-
-
-
-(: FIXME: Still left to be implemented: titlePage, titlePart, docTitle, text, choice, lg, l, and author fields: state etc. :)

@@ -1,43 +1,60 @@
-xquery version "3.0";
+xquery version "3.1";
 
-module namespace stats       = "http://salamanca/stats";
-declare namespace exist      = "http://exist.sourceforge.net/NS/exist";
-declare namespace opensearch = "http://a9.com/-/spec/opensearch/1.1/";
-declare namespace output     = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare namespace sal        = "http://salamanca.adwmainz.de";
-declare namespace tei        = "http://www.tei-c.org/ns/1.0";
-declare namespace templates  = "http://exist-db.org/xquery/templates";
-import module namespace config    = "http://salamanca/config"                at "config.xqm";
-import module namespace sphinx    = "http://salamanca/sphinx"                at "sphinx.xql";
-import module namespace console   = "http://exist-db.org/xquery/console";
-import module namespace functx    = "http://www.functx.com";
-(:
-import module namespace i18n      = "http://exist-db.org/xquery/i18n"        at "i18n.xql";
-import module namespace kwic      = "http://exist-db.org/xquery/kwic";
-import module namespace request   = "http://exist-db.org/xquery/request";
-import module namespace templates = "http://exist-db.org/xquery/templates";
-:)
+(:~ 
+ : Stats XQuery-Module
+ : This module contains the functions for statistics and analysis:
+ :   - ...
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
+module namespace stats          = "http://salamanca.school/ns/stats";
 
-declare function stats:loadListOfLemmata($node as node(), $model as map(*)) as map(*) {
+declare namespace exist         = "http://exist.sourceforge.net/NS/exist";
+declare namespace opensearch    = "http://a9.com/-/spec/opensearch/1.1/";
+declare namespace output        = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare namespace sal           = "http://salamanca.school/ns/sal";
+declare namespace tei           = "http://www.tei-c.org/ns/1.0";
+declare namespace templates     = "http://exist-db.org/xquery/templates";
+import module namespace console = "http://exist-db.org/xquery/console";
+import module namespace functx  = "http://www.functx.com";
+import module namespace config  = "http://salamanca.school/ns/config"                at "config.xqm";
+import module namespace sphinx  = "http://salamanca.school/ns/sphinx"                at "sphinx.xql";
+
+declare
+function stats:loadListOfLemmata($node as node(), $model as map(*)) as map(*) {
     map { 'listOfLemmata' := doc($config:data-root || "/lemmata-97.xml")//sal:lemma[@type='term'][position() le $config:stats-limit] }
 };
 
-declare function stats:lemmaCount($node as node(), $model as map (*), $lang as xs:string?) {
+declare
+function stats:lemmaCount($node as node(), $model as map (*), $lang as xs:string?) {
     <span>{concat($model('test'), count($model('listOfLemmata')))}</span>
 };
 
-declare function stats:loadSingleLemmaStats($node as node(), $model as map (*), $lang as xs:string?) {
+declare
+function stats:loadSingleLemmaStats($node as node(), $model as map (*), $lang as xs:string?) {
     map { 'currentLemma' := $model('listOfLemmata') }
 };
 
 (: ToDo :)
 (: All: Number of occurrences / in number of different works :)
-declare %templates:wrap
-        %templates:default("wid", "W0013")
-    function stats:singleLemmaStats($node as node(), $model as map (*), $wid as xs:string?, $lang as xs:string?) {
+declare
+    %templates:wrap
+    %templates:default("wid", "W0013")
+function stats:singleLemmaStats($node as node(), $model as map (*), $wid as xs:string?, $lang as xs:string?) {
 
     let $currentLemma          := $model('currentLemma')
-(:    let $currentLemmaHTML   := replace(replace(replace(translate($currentLemma, ' ', '+'), '|', '&#124;'), '(', '&#40;'), ')', '&#41;'):)
+  (:    let $currentLemmaHTML   := replace(replace(replace(translate($currentLemma, ' ', '+'), '|', '&#124;'), '(', '&#40;'), ')', '&#41;'):)
     let $currentSearch         := sphinx:search($node, $model, $currentLemma, 'corpus-nogroup', 0, 200)
     let $currentOccurrencesCount := if (count($currentSearch("results")//terms) = 1) then
                                         $currentSearch("results")//terms/hits/text()
@@ -62,8 +79,8 @@ declare %templates:wrap
                                    else ()
 
 
-(:    let $intraWorkDistribution := :)
-(:                                href="#details_{translate(replace($currentLemma, ' | ', '|'), ' ', '+')}":)
+  (:    let $intraWorkDistribution := :)
+  (:                                href="#details_{translate(replace($currentLemma, ' | ', '|'), ' ', '+')}":)
     let $detailsLink    :=  <a  class="toggleDetails"
                                 data-target="#details_{translate(replace($currentLemma, ' | ', '|'), ' ', '+')}"
                                 data-toggle="collapse">Frequenz von '{$currentLemma}' in W0013 <i class="fa fa-chevron-down"aria-hidden="true"></i>

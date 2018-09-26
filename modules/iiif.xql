@@ -1,32 +1,51 @@
 xquery version "3.1";
 
-module namespace iiif     = "http://salamanca/iiif";
-declare namespace exist   = "http://exist.sourceforge.net/NS/exist";
-declare namespace output  = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare namespace sal     = "http://salamanca.adwmainz.de";
-declare namespace tei     = "http://www.tei-c.org/ns/1.0";
-declare namespace xi      = "http://www.w3.org/2001/XInclude";
+(:~ 
+ : iiif XQuery-Module
+ : This module contains routines for iiif management:
+ :   - ...
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
+module namespace iiif               = "http://salamanca.school/ns/iiif";
 
-import module namespace config    = "http://salamanca/config"               at "config.xqm";
-import module namespace console    = "http://exist-db.org/xquery/console";
-import module namespace functx     = "http://www.functx.com";
-import module namespace i18n       = "http://exist-db.org/xquery/i18n"       at "i18n.xql";
-import module namespace templates = "http://exist-db.org/xquery/templates";
-import module namespace util       = "http://exist-db.org/xquery/util";
-import module namespace xmldb      = "http://exist-db.org/xquery/xmldb";
+declare namespace exist             = "http://exist.sourceforge.net/NS/exist";
+declare namespace output            = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare namespace sal               = "http://salamanca.school/ns/sal";
+declare namespace tei               = "http://www.tei-c.org/ns/1.0";
+declare namespace xi                = "http://www.w3.org/2001/XInclude";
+import module namespace console     = "http://exist-db.org/xquery/console";
+import module namespace functx      = "http://www.functx.com";
+import module namespace templates   = "http://exist-db.org/xquery/templates";
+import module namespace util        = "http://exist-db.org/xquery/util";
+import module namespace xmldb       = "http://exist-db.org/xquery/xmldb";
+import module namespace config      = "http://salamanca.school/ns/config"     at "config.xqm";
+import module namespace i18n        = "http://exist-db.org/xquery/i18n"       at "i18n.xql";
 
 declare option output:method "json";
 declare option output:media-type "application/json";
 
 (: relative server domain! :)
-declare variable $iiif:serverDomain := $config:serverdomain;
-declare variable $iiif:proto := $config:proto;
+declare variable $iiif:serverDomain         := $config:serverdomain;
+declare variable $iiif:proto                := $config:proto;
 
-declare variable $iiif:facsServer := $iiif:proto || "://facs." || $iiif:serverDomain;
-declare variable $iiif:imageServer := $iiif:facsServer || "/iiif/image/";
-declare variable $iiif:presentationServer := $iiif:facsServer || "/iiif/presentation/";
+declare variable $iiif:facsServer           := $iiif:proto || "://facs." || $iiif:serverDomain;
+declare variable $iiif:imageServer          := $iiif:facsServer || "/iiif/image/";
+declare variable $iiif:presentationServer   := $iiif:facsServer || "/iiif/presentation/";
 
-declare function iiif:needsResource($targetWorkId as xs:string) as xs:boolean {
+declare
+function iiif:needsResource($targetWorkId as xs:string) as xs:boolean {
     let $targetWorkModTime := xmldb:last-modified($config:tei-works-root, $targetWorkId || '.xml')
 
     return if (util:binary-doc-available($config:iiif-root || '/' || $targetWorkId || '.json')) then
@@ -36,7 +55,8 @@ declare function iiif:needsResource($targetWorkId as xs:string) as xs:boolean {
             true()
 };
 
-declare function iiif:needsResourceString($node as node(), $model as map(*)) {
+declare
+function iiif:needsResourceString($node as node(), $model as map(*)) as element () {
     let $currentWorkId := (string($model('currentWork')/@xml:id))
     return if (iiif:needsResource($currentWorkId)) then
                 <td title="source from: {string(xmldb:last-modified($config:tei-works-root, $currentWorkId || '.xml'))}"><a href="iiif-admin.xql?resourceId={$currentWorkId}"><b>Create IIIF resource NOW!</b></a></td>
@@ -45,14 +65,16 @@ declare function iiif:needsResourceString($node as node(), $model as map(*)) {
     
 };
 
-
-(: Interface function for fetching a iiif resource, either (if possible) from the database or by creating it on-the-fly.
-This resource may be either a manifest (for a single-volume work or a single volume within a multi-volume work) 
-or a collection resource (for a multi-volume work).
-@param $wid: the ID of the work or volume which the manifest is requested for
-@return:     the iiif manifest/collection
-:)
-declare function iiif:fetchResource ($wid as xs:string) as map(*) {
+(:~
+ : Interface function for fetching a iiif resource, either (if possible) from the database or by creating it on-the-fly.
+ : This resource may be either a manifest (for a single-volume work or a single volume within a multi-volume work) 
+ : or a collection resource (for a multi-volume work).
+ :
+ :  @param $wid: the ID of the work or volume which the manifest is requested for
+ :  @return:     the iiif manifest/collection
+~:)
+declare
+function iiif:fetchResource ($wid as xs:string) as map(*) {
     let $workType := if (matches($wid, '^W\d{4}(_Vol\d{2})?$')) then 
                          doc($config:tei-works-root || '/' || $wid || '.xml')/tei:TEI/tei:text/@type
                      else ()
@@ -87,11 +109,14 @@ declare function iiif:fetchResource ($wid as xs:string) as map(*) {
     return $output 
 };
 
-(: Creates a new iiif resource, either a manifest (for a single-volume work or 
-a single volume within a multi-volume work) or a collection resource (for a multi-volume work).
-@param $wid: the ID of the work or volume which the manifest is requested for
-@return:     the iiif manifest/collection :)
-declare function iiif:createResource($targetWorkId as xs:string) as map(*) {
+(:~
+ : Creates a new iiif resource, either a manifest (for a single-volume work or 
+ : a single volume within a multi-volume work) or a collection resource (for a multi-volume work).
+ :  @param $wid: the ID of the work or volume which the manifest is requested for
+ :  @return:     the iiif manifest/collection
+~:)
+declare
+function iiif:createResource($targetWorkId as xs:string) as map(*) {
     let $tei  := doc($config:tei-works-root || '/' || $targetWorkId || '.xml')//tei:TEI
     let $iiifResource :=
         if ($tei) then
@@ -108,11 +133,12 @@ declare function iiif:createResource($targetWorkId as xs:string) as map(*) {
     return $iiifResource
 };
 
-declare function iiif:mkMultiVolumeCollection($workId as xs:string, $tei as node()) as map(*) {
+declare
+function iiif:mkMultiVolumeCollection($workId as xs:string, $tei as node()) as map(*) {
     let $debug := if ($config:debug = "trace") then console:log("iiif:mkMultiVolumeCollection running (" || $workId || " requested) ...") else ()
     let $id := $iiif:presentationServer || "collection/" || $workId
-    let $label := normalize-space($tei//tei:titleStmt/tei:author) || ": " ||
-        normalize-space($tei//tei:titleStmt/tei:title[@type="main"]/text()) || " [multi-volume collection]"
+    let $label :=   normalize-space($tei//tei:titleStmt/tei:author) || ": " ||
+                    normalize-space($tei//tei:titleStmt/tei:title[@type="main"]/text()) || " [multi-volume collection]"
     let $viewingHint := "multi-part"
     let $description := "Coming soon..." (: TODO, depends on available description in TEI metadata :)
     let $license         := "" (: TODO: which license for image data? https://creativecommons.org/licenses/by/4.0/ :)
@@ -144,13 +170,14 @@ declare function iiif:mkMultiVolumeCollection($workId as xs:string, $tei as node
         "license": $license,
         "members": $manifests
     }
-(: rendering? seeAlso? thumbnail? :)
+  (: rendering? seeAlso? thumbnail? :)
     return $collection-out
 };
 
 (: includes single-volume works as well as single volumes as part of multi-volume works:)
 (: volumeId: xml:id of TEI node of single TEI file, e.g. "W0004" or "W0013_Vol01" :)
-declare function iiif:mkSingleVolumeManifest($volumeId as xs:string, $tei as node(), $collectionId as xs:string?) {
+declare
+function iiif:mkSingleVolumeManifest($volumeId as xs:string, $tei as node(), $collectionId as xs:string?) {
     let $debug := if ($config:debug = "trace") then console:log("iiif:mkSingleVolumeManifest running (" || $volumeId || " requested) ...") else ()
     (: File metadata section :)
     let $id := $iiif:presentationServer || $volumeId || "/manifest"
@@ -217,19 +244,19 @@ declare function iiif:mkSingleVolumeManifest($volumeId as xs:string, $tei as nod
     }
     let $manifest-out2 := if ($collectionId) then map:put($manifest-out, "within", $collectionId) else $manifest-out
     return $manifest-out2
-    (: do we need a (SvSal-)logo on the manifest level, to be shown in Mirador for example? :)
-
+  (: do we need a (SvSal-)logo on the manifest level, to be shown in Mirador for example? :)
 };
 
-(: Creates a sequence of canvases. 
-    @param $volumeId The ID of the volume to be processed. 
-    @tei The TEI node of the volume.
-    @thumbnailUrl The complete URL of the thumbnail, as also stated in the "thumbnail" field's "@id" attribute :)
-declare function iiif:mkSequence($volumeId as xs:string, $tei as node(), $thumbnailUrl as xs:string) {
+(:~
+ : Creates a sequence of canvases.
+ :  @param $volumeId The ID of the volume to be processed.
+ :  @tei The TEI node of the volume.
+ :  @thumbnailUrl The complete URL of the thumbnail, as also stated in the "thumbnail" field's "@id" attribute
+~:)
+declare
+function iiif:mkSequence($volumeId as xs:string, $tei as node(), $thumbnailUrl as xs:string) {
     let $debug := if ($config:debug = "trace") then console:log("iiif:mkSequence running...") else ()
-
     let $id := $iiif:presentationServer || $volumeId || "/sequence/normal"
-
     let $canvases :=
         if (count($tei/tei:text/tei:body//tei:pb) > 15) then
             (: we have a full text :)
@@ -278,20 +305,16 @@ declare function iiif:mkSequence($volumeId as xs:string, $tei as node(), $thumbn
     return $sequences-out
 };
 
-declare function iiif:mkCanvasFromTeiFacs($volumeId as xs:string, $facs as xs:string, $index as xs:integer) {
-
+declare
+function iiif:mkCanvasFromTeiFacs($volumeId as xs:string, $facs as xs:string, $index as xs:integer) {
     let $id := $iiif:presentationServer || $volumeId || "/canvas/p" || string($index)
     let $label := "p. " || string($index)
-
     let $digilibImageId := $iiif:imageServer || iiif:teiFacs2IiifImageId($facs)
     (: get image height and width from the digilib server (i.e. from each image json file): :)
     let $options := map { "liberal": true(), "duplicates": "use-last" }
-
     let $digilibImageResource := json-doc($digilibImageId, $options)
-    
     let $imageHeight := map:get($digilibImageResource, "height")
     let $imageWidth := map:get($digilibImageResource, "width")
-
     let $images := array {
         map {
             "@context": "http://iiif.io/api/presentation/2/context.json",
@@ -326,25 +349,23 @@ declare function iiif:mkCanvasFromTeiFacs($volumeId as xs:string, $facs as xs:st
     return $canvas-out
 };
 
-(: Transforms the canvas shipped from an external digilib server into a "Salamanca" canvas 
-by adding some info (such as Salamanca URLs) 
-@param $volumeId The volume's ID.
-@param $canvas The external canvas to be processed.
-@param $index A counter supplied to the function when it is iteratively called, to be used for the pagination of canvases.
-:)
-declare function iiif:transformDigilibCanvas($volumeId as xs:string, $canvas as map(*), $index as xs:integer) {
+(:~
+ : Transforms the canvas shipped from an external digilib server into a "Salamanca" canvas 
+ : by adding some info (such as Salamanca URLs) 
+ :  @param $volumeId The volume's ID.
+ :  @param $canvas The external canvas to be processed.
+ :  @param $index A counter supplied to the function when it is iteratively called, to be used for the pagination of canvases.
+~:)
+declare
+function iiif:transformDigilibCanvas($volumeId as xs:string, $canvas as map(*), $index as xs:integer) {
     let $id := $iiif:presentationServer || $volumeId || "/canvas/p" || string($index)
     let $label := "p. " || string($index)
-
     let $dl-images := map:get($canvas, "images")
     let $dl-image1 := array:get($dl-images, 1) (: assumes that the "images" element contains only one relevant subelement: the first one  :)
     let $dl-resource := map:get($dl-image1, "resource")
-
     let $digilibImageId := $iiif:imageServer || substring-before(substring-after(map:get($dl-resource, "@id"), "/Scaler/IIIF/svsal!"), "/full/full/0/default.jpg")
-
     let $imageHeight := map:get($dl-resource, "height")
     let $imageWidth := map:get($dl-resource, "width")
-
     let $images := array {
         map {
             "@context": "http://iiif.io/api/presentation/2/context.json",
@@ -379,11 +400,13 @@ declare function iiif:transformDigilibCanvas($volumeId as xs:string, $canvas as 
     return $canvas-out
 };
 
-(: Gets the bibliographic metadata of a given TEI document (node).
-    @param $tei The TEI document node for a work
-    @returns An "metadata" array according to the IIIF presentation specifications
-    :)
-declare function iiif:mkMetadata($tei as node()) as array(*) {
+(:~
+ : Gets the bibliographic metadata of a given TEI document (node).
+ :  @param $tei The TEI document node for a work
+ :  @returns An "metadata" array according to the IIIF presentation specifications
+~:)
+declare
+function iiif:mkMetadata($tei as node()) as array(*) {
     let $monogr := $tei/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblStruct/tei:monogr
     let $pubPlace := if ($monogr/tei:imprint/tei:pubPlace[@role='thisEd']) then normalize-space($monogr/tei:imprint/tei:pubPlace[@role='thisEd']/@key)
                      else if ($monogr/tei:imprint/tei:pubPlace[@role='firstEd']) then normalize-space($monogr/tei:imprint/tei:pubPlace[@role='firstEd']/@key)
@@ -395,11 +418,12 @@ declare function iiif:mkMetadata($tei as node()) as array(*) {
                        then array { for $publisher in $monogr/tei:imprint/tei:publisher[@n='firstEd']//tei:persName
                                    return map {"label": iiif:getI18nLabels("publisher"), "@value": normalize-space($publisher[text()]) } }
                        else ()
-(:   let $publishersI18n := for $publisher in $publishers array {
+  (:   let $publishersI18n := for $publisher in $publishers array {
                             map { "@value": map:get(map:get($labels, $labelKey), "en"), "@language": "en" },
                             map { "@value": map:get(map:get($labels, $labelKey), "es"), "@language": "es" },
                             map { "@value": map:get(map:get($labels, $labelKey), "de"), "@language": "de" } 
-                        }  :)         
+                        }
+  :)         
     let $pubDate := if ($monogr/tei:imprint/tei:date[@type='thisEd']) then string($monogr/tei:imprint/tei:date[@type='thisEd']/@when)
                     else if ($monogr/tei:imprint/tei:date[@type='firstEd']) then string($monogr/tei:imprint/tei:date[@type='firstEd']/@when)
                     else ()
@@ -415,22 +439,27 @@ declare function iiif:mkMetadata($tei as node()) as array(*) {
         map {"label": iiif:getI18nLabels("publishers"), "value": $publishers},
         map {"label": iiif:getI18nLabels("full-title"), "value": normalize-space($tei//tei:sourceDesc/tei:biblStruct//tei:monogr/tei:title[@type='main'])}
     }
-(:   further potential metadata fields:
+  (:   further potential metadata fields:
         map {"label": "Topic", "value": ""},
-        map {"label": "About", "value": ""}  :)
+        map {"label": "About", "value": ""}
+  :)
     return $metadata
 };
 
-declare function iiif:getThumbnailId($tei as node()) as xs:string {
+declare
+function iiif:getThumbnailId($tei as node()) as xs:string {
     let $thumbnailFacs := if ($tei/tei:text/tei:front//tei:titlePage[1]//tei:pb[1]) then $tei/tei:text/tei:front/tei:titlePage//tei:pb[1]/@facs
                           else $tei/tei:text/tei:front//tei:titlePage[1]/preceding-sibling::tei:pb[1]/@facs
     return iiif:teiFacs2IiifImageId($thumbnailFacs)
 };
 
-(: Returns for a specific label keyword an array of labels in English, Spanish, and German.
-    @param $labelKey The label keyword for which internationalized versions are required
-    @return An array of (maps for) labels in English, Spanish, and German :)
-declare function iiif:getI18nLabels($labelKey as xs:string?) as array(*) {
+(:~
+ : Returns for a specific label keyword an array of labels in English, Spanish, and German.
+ :  @param $labelKey The label keyword for which internationalized versions are required
+ :  @return An array of (maps for) labels in English, Spanish, and German
+~:)
+declare
+function iiif:getI18nLabels($labelKey as xs:string?) as array(*) {
     let $labels := map { "title": map {"en": "Title", "de": "Titel", "es": "Título"},
                          "author": map {"en": "Author", "de": "Autor", "es": "Autor"},
                          "date-added": map {"en": "Date Added", "de": "Hinzugefügt", "es": "Agregado"},
@@ -451,9 +480,12 @@ declare function iiif:getI18nLabels($labelKey as xs:string?) as array(*) {
     return $currentLabel
 };
 
-(: converts a tei:pb/@facs value (given that it has the form "facs:Wxxxx(-x)-xxxx") into an image id understandable by the Digilib server,
-    such as "W0013!A!W0013-A-0009". Changes in the Digilib settings, for instance with the delimiters, might make changes in this function necessary :)
-declare function iiif:teiFacs2IiifImageId($facs as xs:string?) as xs:string {
+(:~
+ : converts a tei:pb/@facs value (given that it has the form "facs:Wxxxx(-x)-xxxx") into an image id understandable by the Digilib server,
+ :   such as "W0013!A!W0013-A-0009". Changes in the Digilib settings, for instance with the delimiters, might make changes in this function necessary
+~:)
+declare
+function iiif:teiFacs2IiifImageId($facs as xs:string?) as xs:string {
     let $facsWork := substring-before(substring-after($facs, "facs:"), "-")
     let $facsVol := if (contains(substring-after($facs, "-"), "-")) then substring-before(substring-after($facs, "-"),"-") else ()
     let $facsImgId := substring($facs, string-length($facs) - 3, 4)
@@ -463,9 +495,12 @@ declare function iiif:teiFacs2IiifImageId($facs as xs:string?) as xs:string {
     return $iiifImageId
 };
 
-(: Returns the appropriate image id of a volume, based on its xml:id (as given in the TEI node) and the volume number therein (if any).
-    If a work has been separated into several files with identifiers ending on underscore + lowercased letter, then this id will be returned. :)
-declare function iiif:getIiifVolumeId($volumeId as xs:string) as xs:string {
+(:~
+ : Returns the appropriate image id of a volume, based on its xml:id (as given in the TEI node) and the volume number therein (if any).
+ :  If a work has been separated into several files with identifiers ending on underscore + lowercased letter, then this id will be returned.
+~:)
+declare
+function iiif:getIiifVolumeId($volumeId as xs:string) as xs:string {
     let $volumeMap := map {
         "Vol01": "A","Vol02": "B","Vol03": "C","Vol04": "D","Vol05": "E","Vol06": "F","Vol07": "G","Vol08": "H","Vol09": "I","Vol10": "J"
     }
@@ -477,23 +512,24 @@ declare function iiif:getIiifVolumeId($volumeId as xs:string) as xs:string {
     return $iiifVolumeId
 };
 
-declare function iiif:MiradorData($node as node(), $model as map (*), $wid as xs:string?) as xs:string {
-(:
-Returns a JSON array of objects.
-In the case of multi-volume works, return:
-              data : [
-                        {"collectionUri" : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=" + $wid},
-                        {"manifestUri"   : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=W0013_Vol01",
-                         "location" :    "MPIeR iiif Service"},
-                        {"manifestUri"   : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=W0013_Vol02",
-                         "location" :    "MPIeR iiif Service"}
-              ]
-In the case of single volume works, return:
-              data : [
-                        {"manifestUri" : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=" + $wid,
-                         "location" :    "MPIeR iiif Service"}
-              ]
-:)
+(:~
+ : Returns a JSON array of objects.
+ : In the case of multi-volume works, return:
+ :             data : [
+ :                       {"collectionUri" : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=" + $wid},
+ :                       {"manifestUri"   : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=W0013_Vol01",
+ :                        "location" :    "MPIeR iiif Service"},
+ :                       {"manifestUri"   : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=W0013_Vol02",
+ :                        "location" :    "MPIeR iiif Service"}
+ :             ]
+ : In the case of single volume works, return:
+ :             data : [
+ :                       {"manifestUri" : "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=" + $wid,
+ :                        "location" :    "MPIeR iiif Service"}
+ :             ]
+~:)
+declare
+function iiif:MiradorData($node as node(), $model as map (*), $wid as xs:string?) as xs:string {
     let $debug :=  if ($config:debug = "trace") then console:log("iiif:MiradorData running...") else ()
     let $tei  := doc($config:tei-works-root || '/' || $wid || '.xml')//tei:TEI
     let $miradorData :=
@@ -524,27 +560,28 @@ In the case of single volume works, return:
         </output:serialization-parameters>)
 };
 
-declare function iiif:MiradorWindowObject($node as node(), $model as map (*), $wid as xs:string?) as xs:string {
-(: Return a JSON Array like this one:
-                [
-                    {
-                        "loadedManifest" :     "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=W0013_Vol01",
-                        "canvasID" :           "http://salamanca.school/iiif/presentation/W0013_Vol01/canvas/p1",
-                        "viewType" :           "ImageView",
-                        "availableViews" :     ["ImageView", "ThumbnailsView"],
-                        "displayLayout" :      false,  // change layout of panels (e.g. add panel)
-                        "bottomPanelVisible" : false  //  - " - invisible
-                    }
-                ]
-:)
-
+(:~
+ : Return a JSON Array like this one:
+ :               [
+ :                   {
+ :                       "loadedManifest" :     "https://salamanca.school:8443/exist/apps/salamanca/en/iiif-out.xql?wid=W0013_Vol01",
+ :                       "canvasID" :           "http://salamanca.school/iiif/presentation/W0013_Vol01/canvas/p1",
+ :                       "viewType" :           "ImageView",
+ :                       "availableViews" :     ["ImageView", "ThumbnailsView"],
+ :                       "displayLayout" :      false,  // change layout of panels (e.g. add panel)
+ :                       "bottomPanelVisible" : false  //  - " - invisible
+ :                   }
+ :               ]
+~:)
+declare
+function iiif:MiradorWindowObject($node as node(), $model as map (*), $wid as xs:string?) as xs:string {
     let $debug     :=  if ($config:debug = "trace") then console:log("iiif:MiradorData running...") else ()
     let $tei       := doc($config:tei-works-root || '/' || $wid || '.xml')//tei:TEI
     let $manifest  :=
         if ($tei) then
         (: dataset exists: :)
             if ($tei/tei:text[@type='work_multivolume']) then
-(:                            let $volumeID      := for $fileName in ($tei/tei:text/tei:group/xi:include/@href)[1] return doc($config:tei-works-root || '/' || $fileName)//tei:TEI/@xml:id/string():)
+  (:                            let $volumeID      := for $fileName in ($tei/tei:text/tei:group/xi:include/@href)[1] return doc($config:tei-works-root || '/' || $fileName)//tei:TEI/@xml:id/string():)
                 let $volumeID      := for $fileName in ($tei/tei:text/tei:group/xi:include/@href)[1] return doc($config:tei-works-root || '/' || $fileName)//tei:TEI/@xml:id/string()
                 return concat("iiif-out.xql?wid=", $volumeID)
             else if ($tei/tei:text[@type='work_monograph' or @type='work_volume']) then
@@ -552,11 +589,11 @@ declare function iiif:MiradorWindowObject($node as node(), $model as map (*), $w
             else ()
         else ()
     let $debug :=  if ($config:debug = "trace") then console:log("Manifest: " || $manifest || ".") else ()
-(:  TODO: Retrieve Startcanvas, currently we omit it, falling back to the default (1st canvas)
+  (:  TODO: Retrieve Startcanvas, currently we omit it, falling back to the default (1st canvas)
     let $mf := json-doc($config:app-root || '/' || $manifest)
     let $canvasId := $mf("sequences")(1)("canvases")(1)("@id")
     let $debug :=  if ($config:debug = "trace") then console:log("CanvasId: " || $canvasId || ".") else ()
-:)
+  :)
     let $windowObject := array {
         map {
             "loadedManifest": $manifest,
@@ -578,7 +615,8 @@ declare function iiif:MiradorWindowObject($node as node(), $model as map (*), $w
         </output:serialization-parameters>)
 };
 
-declare function iiif:getPageId($canvasId as xs:string*) {
+declare
+function iiif:getPageId($canvasId as xs:string*) {
     let $HTMLcollection := collection($config:html-root )
     let $results := map:new(
                             for $id in $canvasId
@@ -589,11 +627,9 @@ declare function iiif:getPageId($canvasId as xs:string*) {
     return $results
 };
 
-
 (: TODO:
     - create top collection comprising all SvSal works?
     (- create ranges (deprecation warning...)?;)
     - check validity and consistency of @id on any level
     - dealing with TEI data which has been separated into Wxxx_a, Wxxx_b etc due to performance issues?
  :)
-

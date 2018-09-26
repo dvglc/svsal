@@ -25,22 +25,23 @@ module namespace html               = "http://salamanca.school/ns/html";
 
 declare namespace exist             = "http://exist.sourceforge.net/NS/exist";
 declare namespace output            = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare namespace sal               = "http://salamanca.school/ns/sal";
-declare namespace tei               = "http://www.tei-c.org/ns/1.0";
 declare namespace request           = "http://exist-db.org/xquery/request";
+declare namespace sal               = "http://salamanca.school/ns/sal";
 declare namespace session           = "http://exist-db.org/xquery/session";
+declare namespace tei               = "http://www.tei-c.org/ns/1.0";
 declare namespace transform         = "http://exist-db.org/xquery/transform";
 declare namespace util              = "http://exist-db.org/xquery/util";
 declare namespace xhtml             = "http://www.w3.org/1999/xhtml";
-declare namespace xmldb             = "http://exist-db.org/xquery/xmldb";
 declare namespace xi                = "http://www.w3.org/2001/XInclude";
-import module namespace config      = "http://salamanca.school/ns/config"                at "config.xqm";
-import module namespace render      = "http://salamanca.school/ns/render"                at "render.xql";
-import module namespace console     = "http://exist-db.org/xquery/console";
+declare namespace xmldb             = "http://exist-db.org/xquery/xmldb";
 import module namespace functx      = "http://www.functx.com";
-import module namespace i18n        = "http://exist-db.org/xquery/i18n"        at "i18n.xql";
+import module namespace console     = "http://exist-db.org/xquery/console";
 import module namespace templates   = "http://exist-db.org/xquery/templates";
-import module namespace stool       = "http://salamanca.school/ns/stool"                  at "stool.xql";
+import module namespace config      = "http://salamanca.school/ns/config"               at "config.xqm";
+import module namespace render      = "http://salamanca.school/ns/render"               at "render.xql";
+import module namespace i18n        = "http://exist-db.org/xquery/i18n"                 at "i18n.xql";
+import module namespace stool       = "http://salamanca.school/ns/stool"                at "stool.xql";
+
 
 (: === Page Header Elements === :)
 
@@ -48,7 +49,7 @@ declare
     %templates:default("language", "en") 
 function html:meta-title($node as node(), $model as map(*), $lang as xs:string, $wid as xs:string*, $q as xs:string?) as element() {  
     let $output := 
-                         if (ends-with(request:get-uri(), "/author.html")) then
+                    if (ends-with(request:get-uri(), "/author.html")) then
                         <title>
                             {html:formatName($model("currentAuthor")//tei:person//tei:persName)} -
                              <i18n:text key='titleHeader'>Die Schule von Salamanca</i18n:text></title>
@@ -60,12 +61,12 @@ function html:meta-title($node as node(), $model as map(*), $lang as xs:string, 
                             {string-join(doc($html:tei-works-root || "/" || $wid || ".xml")//tei:sourceDesc//tei:author/tei:persName/tei:surname, ', ') || ': ' ||
                              doc($html:tei-works-root || "/" || $wid || ".xml")//tei:sourceDesc//tei:title[@type = 'short']/string()} -
                              <i18n:text key='titleHeader'>Die Schule von Salamanca</i18n:text></title>
-(:                    else if (request:get-parameter('wid', '')) then
+    (:                else if (request:get-parameter('wid', '')) then
                         <title>
                             {replace(request:get-parameter('wid', ''), request:get-parameter('wid', ''), doc($html:tei-works-root || "/" || request:get-parameter('wid', '') || ".xml")//tei:sourceDesc//tei:author/tei:persName/tei:surname/string())||': '||
                              replace(request:get-parameter('wid', ''), request:get-parameter('wid', ''), doc($html:tei-works-root || "/" || request:get-parameter('wid', '') || ".xml")//tei:sourceDesc//tei:title[@type = 'short']/string())} -
                              <i18n:text key='titleHeader'>Die Schule von Salamanca</i18n:text></title>
-:)
+    :)
                     else if (ends-with(request:get-uri(), "/workDetails.html")) then
                         <title>
                             {string-join($model("currentWork")//tei:sourceDesc//tei:author/tei:persName/tei:surname, '/') || ", " ||
@@ -124,7 +125,7 @@ function html:meta-title($node as node(), $model as map(*), $lang as xs:string, 
                         <title><i18n:text key="titleHeader">Die Schule von Salamanca</i18n:text></title>
  return
         i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", "de")
-};   
+};
 
 declare
     %templates:default("lang", "en") 
@@ -210,50 +211,50 @@ function html:next-link($node as node(), $model as map(*), $wid as xs:string?, $
 
 declare
 function html:carousel ($node as node(), $model as map(*)){
-<div id="carousel" class="carousel slide" data-ride="carousel">
-                <!-- Indicators -->
-                <ol class="carousel-indicators">
-                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"/>
-                    <li data-target="#carousel-example-generic" data-slide-to="1"/>
-                    <li data-target="#carousel-example-generic" data-slide-to="2"/>
-                    <li data-target="#carousel-example-generic" data-slide-to="3"/>
-                    <li data-target="#carousel-example-generic" data-slide-to="4"/>
-                    <li data-target="#carousel-example-generic" data-slide-to="5"/>
-                    <li data-target="#carousel-example-generic" data-slide-to="6"/>
-                </ol>
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner">
-                    <div class="item active">
-                        <img src="resources/img/slider/slide01a.jpg" class="img-responsive" alt="Responsive image"/>
-                    </div>
-                    <div class="item">
-                        <img src="resources/img/slider/slide02a.jpg" class="img-responsive" alt="Responsive image"/>
-                    </div>
-                    <div class="item">
-                        <img src="resources/img/slider/slide03a.jpg" class="img-responsive" alt="Responsive image"/>
-                    </div>
-                    <div class="item">
-                        <img src="resources/img/slider/slide04a.jpg" class="img-responsive" alt="Responsive image"/>
-                    </div>
-                    <div class="item">
-                        <img src="resources/img/slider/slide05a.jpg" class="img-responsive" alt="Responsive image"/>
-                    </div>
-                   <div class="item">
-                        <img src="resources/img/slider/slide06a.jpg" class="img-responsive" alt="Responsive image"/>
-                    </div>
-                    <div class="item">
-                        <img src="resources/img/slider/slide07a.jpg" class="img-responsive" alt="Responsive image"/>
-                    </div>
-                </div>
-                <!-- Controls -->
-                <a class="left carousel-control" href="#carousel" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left"/>
-                </a>
-                <a class="carousel-control right" href="#carousel" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right"/>
-                </a>
+    <div id="carousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"/>
+            <li data-target="#carousel-example-generic" data-slide-to="1"/>
+            <li data-target="#carousel-example-generic" data-slide-to="2"/>
+            <li data-target="#carousel-example-generic" data-slide-to="3"/>
+            <li data-target="#carousel-example-generic" data-slide-to="4"/>
+            <li data-target="#carousel-example-generic" data-slide-to="5"/>
+            <li data-target="#carousel-example-generic" data-slide-to="6"/>
+        </ol>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            <div class="item active">
+                <img src="resources/img/slider/slide01a.jpg" class="img-responsive" alt="Responsive image"/>
             </div>
-            };
+            <div class="item">
+                <img src="resources/img/slider/slide02a.jpg" class="img-responsive" alt="Responsive image"/>
+            </div>
+            <div class="item">
+                <img src="resources/img/slider/slide03a.jpg" class="img-responsive" alt="Responsive image"/>
+            </div>
+            <div class="item">
+                <img src="resources/img/slider/slide04a.jpg" class="img-responsive" alt="Responsive image"/>
+            </div>
+            <div class="item">
+                <img src="resources/img/slider/slide05a.jpg" class="img-responsive" alt="Responsive image"/>
+            </div>
+            <div class="item">
+                <img src="resources/img/slider/slide06a.jpg" class="img-responsive" alt="Responsive image"/>
+            </div>
+            <div class="item">
+                <img src="resources/img/slider/slide07a.jpg" class="img-responsive" alt="Responsive image"/>
+            </div>
+        </div>
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"/>
+        </a>
+        <a class="carousel-control right" href="#carousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"/>
+        </a>
+    </div>
+};
 
 (:Title of APP "Die Schule von Salamanca":)
 declare
@@ -274,9 +275,10 @@ function html:logo($node as node(), $model as map(*), $lang as xs:string) as ele
             </a>   
         </div>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};  
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};  
 
-(: Navigation:  create header menue and dropdown:)
+(: Navigation: create header menu and dropdown:)
 declare
 function html:app-header($node as node(), $model as map(*), $lang as xs:string, $aid as xs:string?, $lid as xs:string?, $nid as xs:string?, $wpid as xs:string?, $wid as xs:string?) as element()  {
     let $output :=
@@ -353,13 +355,13 @@ function html:app-header($node as node(), $model as map(*), $lang as xs:string, 
                 </li>
             </menu>
         </div>
-     return
-           i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri())) 
+    return
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri())) 
 };
 
 (: Navigation create Mobile-header menue and dropdown in work.html:)
 declare
-function html:app-headerWork($node as node(), $model as map(*), $lang as xs:string, $wid as xs:string*) as element()  {
+function html:app-headerWork($node as node(), $model as map(*), $lang as xs:string, $wid as xs:string*) as element() {
     let $output :=
     <div class="collapse navbar-collapse navbar-menubuilder">
         <div class="row">
@@ -400,19 +402,20 @@ function html:app-headerWork($node as node(), $model as map(*), $lang as xs:stri
         </div>
     </div>
     return
-           i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri())) 
-};  
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri())) 
+};
 
 (:create main links on landing page:)
 declare
     %templates:wrap
-function html:langWorks($node as node(), $model as map(*), $lang as xs:string) as element()  {
-    let $output := 
+function html:langWorks($node as node(), $model as map(*), $lang as xs:string) as element() {
+    let $output :=
         <a  href="works.html">
             <span class="glyphicon glyphicon-file" aria-hidden="true"></span>&#160;<i18n:text key="works">Werke</i18n:text>
         </a>
     return
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};  
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
 
 declare
     %templates:wrap
@@ -422,17 +425,19 @@ function html:langDictionary($node as node(), $model as map(*), $lang as xs:stri
             <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&#160;<i18n:text key="dictionary">Wörterbuch</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};  
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
 
 declare
     %templates:wrap
-function html:langAuthors($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:langAuthors($node as node(), $model as map(*), $lang as xs:string) as element() {
     let $output := 
         <a href="authors.html">
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&#160;<i18n:text key="authors">Autoren</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};  
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
 
 declare
     %templates:wrap
@@ -442,8 +447,9 @@ function html:langSearch($node as node(), $model as map(*), $lang as xs:string) 
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>&#160;<i18n:text key="search">Suche</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};  
-        
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
+
 declare
     %templates:wrap
 function html:langWorkingPapers($node as node(), $model as map(*), $lang as xs:string) as element() {
@@ -451,7 +457,8 @@ function html:langWorkingPapers($node as node(), $model as map(*), $lang as xs:s
         <a  href="workingPapers.html">
             <i class="fa fa-pencil" aria-hidden="true"></i>&#160;<i18n:text key="workingPapers">Working Papers</i18n:text>
         </a>
-    return i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};  
+    return i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
 
 declare
     %templates:wrap
@@ -461,8 +468,9 @@ function html:langNews($node as node(), $model as map(*), $lang as xs:string) as
             <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>&#160;<i18n:text key="news">Aktuelles</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};  
-        
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
+
 declare
     %templates:wrap
 function html:langPrDesc($node as node(), $model as map(*), $lang as xs:string) as element()  {
@@ -470,12 +478,13 @@ function html:langPrDesc($node as node(), $model as map(*), $lang as xs:string) 
         <a  href="project.html">
            <i class="fa fa-university" aria-hidden="true"></i>&#160;<i18n:text key="about">Projekt</i18n:text>
         </a>
-    return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};
-        
+    return
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
+
 declare
     %templates:wrap
-function html:langProjektteam($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:langProjektteam($node as node(), $model as map(*), $lang as xs:string) as element() {
         if ($lang = 'en') then
             <a target="blank" href="http://www.salamanca.adwmainz.de/en/project-team-and-consultants.html">
                <i class="fa fa-group" aria-hidden="true"></i>&#160;Project Team
@@ -492,47 +501,51 @@ function html:langProjektteam($node as node(), $model as map(*), $lang as xs:str
 
 declare
     %templates:wrap
-function html:langEdGuidelines($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:langEdGuidelines($node as node(), $model as map(*), $lang as xs:string) as element() {
     let $output := 
         <a  href="guidelines.html">
            <i class="fa fa-cogs" aria-hidden="true"></i>&#160;<i18n:text key="guidelines">Editionsrichtlinien</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
 
 declare
     %templates:wrap
-function html:langWPcreation($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:langWPcreation($node as node(), $model as map(*), $lang as xs:string) as element() {
     let $output := 
         <a  href="editorialWorkingPapers.html">
            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>&#160;<i18n:text key="getInvolved">Beitragen</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};
-        
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
+
 declare
     %templates:wrap
-function html:langLegal($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:langLegal($node as node(), $model as map(*), $lang as xs:string) as element() {
     let $output := 
         <a  href="legal.html">
            <span class="fa fa-lock" aria-hidden="true"></span>&#160;<i18n:text key="legal">Datenschutz &amp; Impressum</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};
-        
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
+
 declare
     %templates:wrap
-function html:langContact($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:langContact($node as node(), $model as map(*), $lang as xs:string) as element() {
     let $output := 
         <a  href="contact.html">
             <i class="fa fa-envelope-o" aria-hidden="true"></i>&#160;<i18n:text key="contact">Kontakt</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};       
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
 
 declare
     %templates:wrap
-function html:langSourceCode($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:langSourceCode($node as node(), $model as map(*), $lang as xs:string) as element() {
     let $output :=
             <a target="blank" href="https://github.com/digicademy/svsal">
                <i class="glyphicon glyphicon-console" aria-hidden="true"></i>&#160;<i18n:text key="sourceCode">Quellcode</i18n:text>
@@ -543,13 +556,14 @@ function html:langSourceCode($node as node(), $model as map(*), $lang as xs:stri
 
 declare
     %templates:wrap
-function html:searchInfoDetails($node as node(), $model as map(*), $lang as xs:string) as element()  {
+function html:searchInfoDetails($node as node(), $model as map(*), $lang as xs:string) as element() {
     let $output := 
         <a  href="searchDetails.html">
            <i18n:text key="moreSearchDetails">Weitere Suchmöglichkeiten</i18n:text>
         </a>
     return 
-        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))};   
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+};
 
 
 (: === Page Footer Elements === :)
@@ -563,11 +577,10 @@ function html:searchInfoDetails($node as node(), $model as map(*), $lang as xs:s
  :  @return a html span
 ~:)
 declare
-    %test:arg("node", <tei:persName key="Bar,   Foo ">Bla</tei:persName>) %test:assertEquals("Bar, Foo")
 function html:footer ($node as node(), $model as map(*), $lang as xs:string) {
-(: The following is disabled for security reasons:
-    Vers. {doc('/db/apps/salamanca/expath-pkg.xml')/pack:package/@version/string()}
-:)
+    (: The following is disabled for security reasons:
+        Vers. {doc('/db/apps/salamanca/expath-pkg.xml')/pack:package/@version/string()}
+    :)
     let $username := sm:id()//sm:username
     let $footer :=
     <span>
@@ -629,7 +642,6 @@ function html:footer ($node as node(), $model as map(*), $lang as xs:string) {
      return i18n:process($footer, $lang, "/db/apps/salamanca/data/i18n", "de")
 };
 
-
 (: === Other === :)
 
 declare
@@ -639,7 +651,7 @@ function html:contactEMailHTML($node as node(), $model as map(*)) {
 
 declare
     %templates:wrap
- function html:AUTlist($node as node(), $model as map(*), $lang as xs:string) {
+function html:AUTlist($node as node(), $model as map(*), $lang as xs:string) {
         <div class="col-md-6"> 
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -655,36 +667,35 @@ declare
 declare
     %private
 function html:AUTnameLink($node as node(), $model as map(*), $lang as xs:string) {
-        let $nameLink := 
-            <a class="lead" href="{session:encode-url(xs:anyURI('author.html?aid=' || $model('currentAuthor')/@xml:id))}">
-                <span class="glyphicon glyphicon-user"></span>
-               &#xA0;{app:formatName($model('currentAuthor')/tei:persName[1])}
-            </a>
-        return $nameLink
+    let $nameLink := 
+        <a class="lead" href="{session:encode-url(xs:anyURI('author.html?aid=' || $model('currentAuthor')/@xml:id))}">
+            <span class="glyphicon glyphicon-user"></span>
+            &#xA0;{app:formatName($model('currentAuthor')/tei:persName[1])}
+        </a>
+    return $nameLink
 };
 
 declare
     %private
 function html:AUTfromTo ($node as node(), $model as map(*)) {
-        let $birth  :=  replace(xs:string(number(substring-before($model('currentAuthor')/tei:birth/tei:date[1]/@when, '-'))), 'NaN', '??')
-        let $death  :=  replace(xs:string(number(substring-before($model('currentAuthor')/tei:death/tei:date[1]/@when, '-'))), 'NaN', '??')
-        return 
-            <span>{$birth||' - '||$death}</span>
+    let $birth  :=  replace(xs:string(number(substring-before($model('currentAuthor')/tei:birth/tei:date[1]/@when, '-'))), 'NaN', '??')
+    let $death  :=  replace(xs:string(number(substring-before($model('currentAuthor')/tei:death/tei:date[1]/@when, '-'))), 'NaN', '??')
+    return 
+        <span>{$birth||' - '||$death}</span>
 };
 
 declare
     %private
 function html:AUTorder ($node as node(), $model as map(*), $lang) {
-        let $relOrder  :=  $model('currentAuthor')//tei:affiliation/tei:orgName[1]/@key/string()
-        return <span>{i18n:process(<i18n:text key="{$relOrder}">{$relOrder}</i18n:text>, $lang, "/db/apps/salamanca/data/i18n", "en")}</span>
+    let $relOrder  :=  $model('currentAuthor')//tei:affiliation/tei:orgName[1]/@key/string()
+    return <span>{i18n:process(<i18n:text key="{$relOrder}">{$relOrder}</i18n:text>, $lang, "/db/apps/salamanca/data/i18n", "en")}</span>
 };
 
 declare
     %private
 function html:AUTdiscipline ($node as node(), $model as map(*), $lang as xs:string) {
-        let $relOrder  :=  $model('currentAuthor')//tei:affiliation/tei:orgName[1]/@key/string()
+    let $relOrder  :=  $model('currentAuthor')//tei:affiliation/tei:orgName[1]/@key/string()
 };
-
 
 declare
     %templates:wrap
@@ -702,69 +713,68 @@ function app:LEMlist($node as node(), $model as map(*), $lang as xs:string?) {
 declare
     %private
 function html:LEMtitleShortLink($node as node(), $model as map(*), $lang) {
-        <a href="{session:encode-url(xs:anyURI('lemma.html?lid=' || $model('currentLemma')/@xml:id))}">
-             <span class="lead">
-                <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&#xA0;{$model('currentLemma')/tei:teiHeader//tei:titleStmt/tei:title[@type = 'short'] || $config:nbsp}
-            </span>
-        </a>   
+    <a href="{session:encode-url(xs:anyURI('lemma.html?lid=' || $model('currentLemma')/@xml:id))}">
+            <span class="lead">
+            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>&#xA0;{$model('currentLemma')/tei:teiHeader//tei:titleStmt/tei:title[@type = 'short'] || $config:nbsp}
+        </span>
+    </a>   
 };
 
 declare
     %templates:wrap
 function html:LEMauthor($node as node(), $model as map(*)) {
-        let $names := for $author in $model('currentLemma')/tei:teiHeader//tei:author
-                      return stool:rotateFormatName($author/tei:persName)
-        return string-join($names, ', ')
+    let $names := for $author in $model('currentLemma')/tei:teiHeader//tei:author
+                    return stool:rotateFormatName($author/tei:persName)
+    return string-join($names, ', ')
 };
 
 
 declare
     %templates:wrap 
 function html:WRKauthor($node as node(), $model as map(*)) {
-         <span>{stool:formatName($model('currentWork')//tei:teiHeader//tei:sourceDesc/tei:biblStruct/tei:monogr/tei:author/tei:persName)}</span>
+    <span>{stool:formatName($model('currentWork')//tei:teiHeader//tei:sourceDesc/tei:biblStruct/tei:monogr/tei:author/tei:persName)}</span>
 };
-
 
 
 (: --- Todo: Are these really needed? --- :)
 declare
 function html:switchYear ($node as node(), $model as map (*), $lang as xs:string?) {
     let $output := <i18n:text key="year">Jahr</i18n:text>
-        return 
-            i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+    return 
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
 };
 
 declare
 function html:switchPrintingPlace ($node as node(), $model as map (*), $lang as xs:string?) {
     let $output := <i18n:text key="printingPlace">Druckort</i18n:text>
-        return 
-            i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+    return 
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
 };
 
 declare
 function html:switchLanguage ($node as node(), $model as map (*), $lang as xs:string?) {
     let $output := <i18n:text key="lang">Sprache</i18n:text>
-        return 
-            i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+    return 
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
 };
 
 declare
 function html:switchAuthor($node as node(), $model as map (*), $lang as xs:string?) {
     let $output := <i18n:text key="author">Autor</i18n:text>
-        return 
-            i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+    return 
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
 };
 
 declare
 function html:switchTitle($node as node(), $model as map (*), $lang as xs:string?) {
     let $output := <i18n:text key="title">Titel</i18n:text>
-        return 
-            i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
+    return 
+        i18n:process($output, $lang, "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
 };
 
 declare
 function html:switchName ($node as node(), $model as map (*), $lang as xs:string?) {
-let $output := <i18n:text key="lemmata">Lemma</i18n:text>
+    let $output := <i18n:text key="lemmata">Lemma</i18n:text>
     return 
         i18n:process($output, "de", "/db/apps/salamanca/data/i18n", session:encode-url(request:get-uri()))
 };

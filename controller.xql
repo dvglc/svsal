@@ -1,22 +1,39 @@
-xquery version "3.0";
+xquery version "3.1";
 
-import module namespace request = "http://exist-db.org/xquery/request";
-import module namespace session = "http://exist-db.org/xquery/session";
-import module namespace xmldb   = "http://exist-db.org/xquery/xmldb";
-import module namespace console = "http://exist-db.org/xquery/console";
-import module namespace util    = "http://exist-db.org/xquery/util";
-import module namespace functx  = "http://www.functx.com";
-import module namespace config  = "http://salamanca/config" at "modules/config.xqm";
-import module namespace net     = "http://salamanca/net"    at "modules/net.xql";
-import module namespace render  = "http://salamanca/render" at "modules/render.xql";
-import module namespace iiif  = "http://salamanca/iiif" at "modules/iiif.xql";
+(:~ 
+ : Controller XQuery executable
+ : This file contains routing logic.
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+~:)
 
 declare       namespace exist   = "http://exist.sourceforge.net/NS/exist";
 declare       namespace output  = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare       namespace rdf     = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 declare       namespace rdfs    = "http://www.w3.org/2000/01/rdf-schema#";
+declare       namespace sal     = "http://salamanca.school/ns/sal";
 declare       namespace tei     = "http://www.tei-c.org/ns/1.0";
-declare       namespace sal     = "http://salamanca.adwmainz.de";
+import module namespace console = "http://exist-db.org/xquery/console";
+import module namespace functx  = "http://www.functx.com";
+import module namespace request = "http://exist-db.org/xquery/request";
+import module namespace session = "http://exist-db.org/xquery/session";
+import module namespace util    = "http://exist-db.org/xquery/util";
+import module namespace xmldb   = "http://exist-db.org/xquery/xmldb";
+import module namespace config  = "http://salamanca.school/ns/config"   at "modules/config.xqm";
+import module namespace iiif    = "http://salamanca.school/ns/iiif"     at "modules/iiif.xql";
+import module namespace net     = "http://salamanca.school/ns/net"      at "modules/net.xql";
+import module namespace render  = "http://salamanca.school/ns/render"   at "modules/render.xql";
 
 declare option output:method "xml";
 declare option output:media-type "application/xml";
@@ -41,8 +58,8 @@ declare variable $exist:controller  external;
 declare variable $exist:prefix      external;
 declare variable $exist:root        external;
 
-let $lang                     :=
-(:
+let $lang            :=
+  (:
                     if (net:request:get-parameter-names($net-vars) = ('en', 'de', 'es')) then
                         let $pathLang :=      if ('de' = net:request:get-parameter-names($net-vars)) then 'de'
                                          else if ('es' = net:request:get-parameter-names($net-vars)) then 'es'
@@ -50,7 +67,7 @@ let $lang                     :=
                                          else $config:defaultLang
                         let $set := request:set-attribute('lang', $pathLang)
                         return $pathLang
-:)
+  :)
                     if (request:get-parameter-names() = 'lang') then
                         if (request:get-parameter('lang', 'dummy-default-value') = ('de', 'en', 'es')) then
                             let $debug :=  if ($config:debug = "trace") then console:log("case 1a: lang parameter-name and valid value present.") else ()
@@ -96,7 +113,7 @@ let $lang                     :=
                         let $set := request:set-attribute('lang', $config:defaultLang)
                         return $config:defaultLang
 
-let $net-vars       := map {
+let $net-vars        := map {
                             'path'          : $exist:path,
                             'resource'      : $exist:resource,
                             'controller'    : $exist:controller,

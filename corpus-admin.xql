@@ -1,13 +1,34 @@
 xquery version "3.1";
 
-import module   namespace   config  = "http://salamanca/config" at "modules/config.xqm";
-import module   namespace   console = "http://exist-db.org/xquery/console";
-import module   namespace   admin   = "http://salamanca/admin"  at "modules/admin.xql";
-declare         namespace   output  = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare         namespace   request = "http://exist-db.org/xquery/request";
-declare         namespace   response = "http://exist-db.org/xquery/response";
-declare         namespace   util     = "http://exist-db.org/xquery/util";
-declare namespace tei               = "http://www.tei-c.org/ns/1.0";
+(:~ 
+ : coprus-admin XQuery executable
+ : This file creates and writes corpus archive files.
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+~:)
+
+declare         namespace output        = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare         namespace request       = "http://exist-db.org/xquery/request";
+declare         namespace response      = "http://exist-db.org/xquery/response";
+declare         namespace tei           = "http://www.tei-c.org/ns/1.0";
+declare         namespace util          = "http://exist-db.org/xquery/util";
+declare         namespace xmldb         = "http://exist-db.org/xquery/xmldb";
+import module   namespace console       = "http://exist-db.org/xquery/console";
+import module   namespace admin         = "http://salamanca.school/ns/admin"            at "modules/admin.xql";
+import module   namespace config        = "http://salamanca.school/ns/config"           at "modules/config.xqm";
+
+(: Todo declare compression: and file: namespaces! :)
 
 (: This corpus administration module creates a zip file containing all TEI files (except for W0010!) :)
 
@@ -45,5 +66,3 @@ let $debug              := if ($config:debug = ("trace", "info")) then console:l
 return 
 if ($save) then <output><status>Saved corpus zip file at {$filepath}.</status></output>
 else <output><status>Corpus zip file could not be stored!</status></output>
-
-

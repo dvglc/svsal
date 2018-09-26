@@ -1,22 +1,41 @@
-xquery version "3.0";
+xquery version "3.1";
 
-module namespace rdf            = "http://salamanca/rdf";
-declare namespace tei              = "http://www.tei-c.org/ns/1.0";
-declare namespace sal              = "http://salamanca.adwmainz.de";
-declare namespace templates        = "http://exist-db.org/xquery/templates";
-import module namespace functx     = "http://www.functx.com";
-import module namespace app        = "http://salamanca/app"     at "app.xql";
-import module namespace config     = "http://salamanca/config"  at "config.xqm";
-import module namespace render     = "http://salamanca/render"  at "render.xql";
-import module namespace console    = "http://exist-db.org/xquery/console";
-import module namespace http       = "http://expath.org/ns/http-client";
-import module namespace httpclient = "http://exist-db.org/xquery/httpclient";
-import module namespace i18n       = "http://exist-db.org/xquery/i18n";
-import module namespace util       = "http://exist-db.org/xquery/util";
-import module namespace xmldb      = "http://exist-db.org/xquery/xmldb";
+(:~ 
+ : RDF XQuery-Module
+ : This module contains rdf functions:
+ : At the moment, it only reports if rdf has been generated for a given work.
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
+module namespace rdf                = "http://salamanca.school/ns/rdf";
 
+declare namespace sal               = "http://salamanca.school/ns/sal";
+declare namespace tei               = "http://www.tei-c.org/ns/1.0";
+declare namespace templates         = "http://exist-db.org/xquery/templates";
+import module namespace console     = "http://exist-db.org/xquery/console";
+import module namespace functx      = "http://www.functx.com";
+import module namespace http        = "http://expath.org/ns/http-client";
+import module namespace httpclient  = "http://exist-db.org/xquery/httpclient";
+import module namespace i18n        = "http://exist-db.org/xquery/i18n";
+import module namespace util        = "http://exist-db.org/xquery/util";
+import module namespace xmldb       = "http://exist-db.org/xquery/xmldb";
+import module namespace app         = "http://salamanca.school/ns/app"     at "app.xql";
+import module namespace config      = "http://salamanca.school/ns/config"  at "config.xqm";
+import module namespace render      = "http://salamanca.school/ns/render"  at "render.xql";
 
-declare function rdf:needsRDF($targetWorkId as xs:string) as xs:boolean {
+declare
+function rdf:needsRDF($targetWorkId as xs:string) as xs:boolean {
     let $targetSubcollection := for $subcollection in $config:tei-sub-roots return 
                                     if (doc-available(concat($subcollection, '/', $targetWorkId, '.xml'))) then $subcollection
                                     else ()
@@ -29,7 +48,8 @@ declare function rdf:needsRDF($targetWorkId as xs:string) as xs:boolean {
             true()
 };
 
-declare function rdf:needsRDFString($node as node(), $model as map(*)) {
+declare
+function rdf:needsRDFString($node as node(), $model as map(*)) {
     let $currentWorkId := max((string($model('currentWork')/@xml:id), string($model('currentAuthor')/@xml:id), string($model('currentLemma')/@xml:id), string($model('currentWp')/@xml:id)))
     let $targetSubcollection := for $subcollection in $config:tei-sub-roots return 
                                     if (doc-available(concat($subcollection, '/', $currentWorkId, '.xml'))) then $subcollection

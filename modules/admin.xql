@@ -1,23 +1,44 @@
-xquery version "3.0";
+xquery version "3.1";
 
-module namespace admin              = "http://salamanca/admin";
+(:~ 
+ : Admin XQuery-Module
+ : This module contains functions that need write access/admin privileges:
+ :   - ...
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
+module namespace admin              = "http://salamanca.school/ns/admin";
+
 declare namespace exist             = "http://exist.sourceforge.net/NS/exist";
+declare namespace sal               = "http://salamanca.school/ns/sal";
 declare namespace tei               = "http://www.tei-c.org/ns/1.0";
+declare namespace xhtml             = "http://www.w3.org/1999/xhtml";
 declare namespace xi                = "http://www.w3.org/2001/XInclude";
-declare namespace sal               = "http://salamanca.adwmainz.de";
 import module namespace console     = "http://exist-db.org/xquery/console";
 import module namespace functx      = "http://www.functx.com";
 import module namespace templates   = "http://exist-db.org/xquery/templates";
 import module namespace util        = "http://exist-db.org/xquery/util";
 import module namespace xmldb       = "http://exist-db.org/xquery/xmldb";
-import module namespace app         = "http://salamanca/app"                    at "app.xql";
-import module namespace config      = "http://salamanca/config"                 at "config.xqm";
-import module namespace render      = "http://salamanca/render"                 at "render.xql";
-import module namespace sphinx      = "http://salamanca/sphinx"                 at "sphinx.xql";
+import module namespace app         = "http://salamanca.school/ns/app"                    at "app.xql";
+import module namespace config      = "http://salamanca.school/ns/config"                 at "config.xqm";
+import module namespace render      = "http://salamanca.school/ns/render"                 at "render.xql";
+import module namespace sphinx      = "http://salamanca.school/ns/sphinx"                 at "sphinx.xql";
 
 declare option exist:timeout "10800000"; (: 3 h :)
 
-declare function admin:cleanCollection ($wid as xs:string, $collection as xs:string) {
+declare
+function admin:cleanCollection ($wid as xs:string, $collection as xs:string) {
     let $collectionName := if ($collection = "html") then
                                 $config:html-root || "/" || $wid
                             else if ($collection = "data") then
@@ -43,7 +64,8 @@ declare function admin:cleanCollection ($wid as xs:string, $collection as xs:str
     return $remove-status
 };
 
-declare function admin:saveFile ($wid as xs:string, $fileName as xs:string, $content as node(), $collection as xs:string?) {
+declare
+function admin:saveFile ($wid as xs:string, $fileName as xs:string, $content as node(), $collection as xs:string?) {
     let $collectionName := if ($collection = "html") then
                                 $config:html-root || "/" || $wid
                             else if ($collection = "data") then
@@ -76,7 +98,8 @@ declare function admin:saveFile ($wid as xs:string, $fileName as xs:string, $con
     return $store-status
 };
 
-declare function admin:saveFileWRK ($node as node(), $model as map (*), $lang as xs:string?) {
+declare
+function admin:saveFileWRK ($node as node(), $model as map (*), $lang as xs:string?) as element (xhtml:span) {
     let $create-collection  :=  if (not(xmldb:collection-available($config:data-root))) then xmldb:create-collection($config:app-root, "data") else ()
     let $fileNameDe         :=  'works_de.xml'
     let $fileNameEn         :=  'works_en.xml'
@@ -97,10 +120,9 @@ declare function admin:saveFileWRK ($node as node(), $model as map (*), $lang as
             <br/><br/>
             <a href="works.html" class="btn btn-info" role="button"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Open works.html</a>
         </span>   
-
 };
 
-declare function admin:saveFileWRKnoJs ($node as node(), $model as map (*), $lang as xs:string?) {
+declare function admin:saveFileWRKnoJs ($node as node(), $model as map (*), $lang as xs:string?) as element (xhtml:p) {
     let $create-collection  :=  if (not(xmldb:collection-available($config:data-root))) then xmldb:create-collection(util:collection-name($config:data-root), $config:data-root) else ()
     let $fileNameDeSn       :=  'worksNoJs_de_surname.xml'
     let $fileNameEnSn       :=  'worksNoJs_en_surname.xml'
@@ -114,10 +136,10 @@ declare function admin:saveFileWRKnoJs ($node as node(), $model as map (*), $lan
     let $contentEsSn        :=  <sal>
                                     {app:WRKcreateListSurname($node, $model, 'es')}
                                 </sal> 
-    let $fileNameDeTi         :=  'worksNoJs_de_title.xml'
-    let $fileNameEnTi         :=  'worksNoJs_en_title.xml'
-    let $fileNameEsTi         :=  'worksNoJs_es_title.xml'
-     let $contentDeTi        :=  <sal>
+    let $fileNameDeTi       :=  'worksNoJs_de_title.xml'
+    let $fileNameEnTi       :=  'worksNoJs_en_title.xml'
+    let $fileNameEsTi       :=  'worksNoJs_es_title.xml'
+    let $contentDeTi        :=  <sal>
                                     {app:WRKcreateListTitle($node, $model, 'de')}
                                 </sal>   
     let $contentEnTi        :=  <sal>
@@ -126,10 +148,10 @@ declare function admin:saveFileWRKnoJs ($node as node(), $model as map (*), $lan
     let $contentEsTi        :=  <sal>
                                     {app:WRKcreateListTitle($node, $model, 'es')}
                                 </sal>                                
-    let $fileNameDeYe         :=  'worksNoJs_de_year.xml'
-    let $fileNameEnYe         :=  'worksNoJs_en_year.xml'
-    let $fileNameEsYe         :=  'worksNoJs_es_year.xml'
-    let $contentDeYe          :=  <sal>
+    let $fileNameDeYe       :=  'worksNoJs_de_year.xml'
+    let $fileNameEnYe       :=  'worksNoJs_en_year.xml'
+    let $fileNameEsYe       :=  'worksNoJs_es_year.xml'
+    let $contentDeYe        :=  <sal>
                                     {app:WRKcreateListYear($node, $model, 'de')}
                                 </sal>   
     let $contentEnYe        :=  <sal>
@@ -138,10 +160,10 @@ declare function admin:saveFileWRKnoJs ($node as node(), $model as map (*), $lan
     let $contentEsYe        :=  <sal>
                                     {app:WRKcreateListYear($node, $model, 'es')}
                                 </sal>  
-    let $fileNameDePl         :=  'worksNoJs_de_place.xml'
-    let $fileNameEnPl         :=  'worksNoJs_en_place.xml'
-    let $fileNameEsPl         :=  'worksNoJs_es_place.xml'
-    let $contentDePl          :=  <sal>
+    let $fileNameDePl       :=  'worksNoJs_de_place.xml'
+    let $fileNameEnPl       :=  'worksNoJs_en_place.xml'
+    let $fileNameEsPl       :=  'worksNoJs_es_place.xml'
+    let $contentDePl        :=  <sal>
                                     {app:WRKcreateListPlace($node, $model, 'de')}
                                 </sal>   
     let $contentEnPl        :=  <sal>
@@ -155,11 +177,15 @@ declare function admin:saveFileWRKnoJs ($node as node(), $model as map (*), $lan
                                     xmldb:store($config:data-root, $fileNameDeYe, $contentDeYe), xmldb:store($config:data-root, $fileNameEnYe, $contentEnYe), xmldb:store($config:data-root, $fileNameEsYe, $contentEsYe),
                                     xmldb:store($config:data-root, $fileNameDePl, $contentDePl), xmldb:store($config:data-root, $fileNameEnPl, $contentEnPl), xmldb:store($config:data-root, $fileNameEsPl, $contentEsPl))
     return      
-                            <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Noscript-files saved!</p>
-
+        <p>
+            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+            Noscript-files saved!
+        </p>
 };
 
-declare %templates:wrap function admin:renderAuthorLemma ($node as node(), $model as map(*), $aid as xs:string*, $lid as xs:string*, $lang as xs:string*) {
+declare
+    %templates:wrap
+function admin:renderAuthorLemma ($node as node(), $model as map(*), $aid as xs:string*, $lid as xs:string*, $lang as xs:string*) as element (xhtml:p) {
 
     let $request            :=  request:get-parameter('aid', '')
     let $switchType         :=  if ($request) then $aid else $lid
@@ -200,31 +226,43 @@ declare %templates:wrap function admin:renderAuthorLemma ($node as node(), $mode
                                     xmldb:store($config:data-root, $fileLemma,   $lemmata),
                                     xmldb:store($config:data-root, $filePlaces,  $places)
                                 )     
-    return  <p class="lead">{$config:data-root||'/'||$switchType||'.html created'}
-                <a href="{($switchLabel1||$switchLabel2||$switchType)}">&#32;&#32;
-                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                </a>
-            </p>
+    return
+        <p class="lead">{$config:data-root||'/'||$switchType||'.html created'}
+            <a href="{($switchLabel1||$switchLabel2||$switchType)}">&#32;&#32;
+                <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+            </a>
+        </p>
 };
 
-declare function admin:generate-toc-from-div($node, $wid) {
+declare
+function admin:generate-toc-from-div($node, $wid) {
    for $div in ($node/tei:div[@type="work_part"]/tei:div | $node/tei:div[not(@type="work_part")]| $node/*/tei:milestone)
             return admin:toc-div($div, $wid)
 };                      
 
-declare function admin:toc-div($div, $wid) {
+declare
+function admin:toc-div($div, $wid) {
     let $frag    :=     for $item in doc($config:data-root || "/" || $wid || '_nodeIndex.xml')//sal:node
                         where $item/@n eq $div/@xml:id
                         return 'work.html?wid='||$wid ||'&amp;' || 'frag='|| $item/sal:fragment||'#'|| $item/@n
     let $section := $div/@xml:id/string()
     let $getTitle := admin:derive-title($div)
     return 
-        <ul><li><a class="hideMe" href="{$frag}" title="{$getTitle}">{$getTitle}<span class="jstree-anchor hideMe pull-right">{admin:get-pages-from-div($div) }</span></a>
-            { admin:generate-toc-from-div($div, $wid)}
-        </li></ul>
+        <ul>
+            <li>
+                <a class="hideMe" href="{$frag}" title="{$getTitle}">
+                    {$getTitle}
+                    <span class="jstree-anchor hideMe pull-right">
+                        {admin:get-pages-from-div($div)}
+                    </span>
+                </a>
+                { admin:generate-toc-from-div($div, $wid)}
+            </li>
+        </ul>
 };
 
-declare function admin:derive-title($node as node()) as item()* {
+declare
+function admin:derive-title($node as node()) as item()* {
      typeswitch($node)
      case text()                    return $node
      case element(tei:teiHeader)    return ()
@@ -238,22 +276,36 @@ declare function admin:derive-title($node as node()) as item()* {
      case element(tei:milestone)    return ('[', $node/@unit/string(), '] ',  $node/@n/string())
      default return local:passthruTOC($node)
 };
-   
-declare function local:passthruTOC($nodes as node()*) as item()* {
+
+declare
+function local:passthruTOC($nodes as node()*) as item()* {
     for $node in $nodes/node() return admin:derive-title($node)
 };
 
-declare function admin:get-pages-from-div($div) {
-    let $firstpage :=   if ($div[@type='work_volume'] | $div[@type = 'work_monograph']) then ($div//tei:pb)[1]/@n/string() 
-                        else ($div/preceding::tei:pb)[last()]/@n/string()
-    let $lastpage :=    if ($div//tei:pb) then ($div//tei:pb)[last()]/@n/string() else ()
+declare
+function admin:get-pages-from-div($div) {
+    let $firstpage  :=   if ($div[@type='work_volume'] | $div[@type = 'work_monograph']) then ($div//tei:pb)[1]/@n/string() 
+                         else ($div/preceding::tei:pb)[last()]/@n/string()
+    let $lastpage   :=   if ($div//tei:pb) then ($div//tei:pb)[last()]/@n/string() else ()
     return
         if ($firstpage ne '' or $lastpage ne '') then 
             concat(' ', string-join(($firstpage, $lastpage), ' - ')) 
         else ()
 };    
 
-declare %templates:wrap function admin:renderWork($node as node(), $model as map(*), $wid as xs:string*, $lang as xs:string?) as element(div) {
+(: --- Rendering ---
+ : Create HTML and sphinxsearch fragment files
+ : During HTML rendering, the following additional files are created by admin:renderWork:
+ :   - an index of nodes (everything possessing an xml:id attribute), data/W00xy_nodeIndex.xml,
+ :   - a Table of contents, data/W00xy/W00xy_toc.html,
+ :   - a Paginator file for each of the languages, data/W00xy/W00xy_pages_de.html etc.
+ :   For the actual html rendering of works, admin:renderWork first splits the work into fragments
+ :   and calls admin:renderFragment.
+ :)
+
+declare
+    %templates:wrap
+function admin:renderWork($node as node(), $model as map(*), $wid as xs:string*, $lang as xs:string?) as element(xhtml:div) {
     let $start-time       := util:system-time()
     let $wid              := request:get-parameter('wid', '*')
 
@@ -439,19 +491,21 @@ declare %templates:wrap function admin:renderWork($node as node(), $model as map
 
     (: Now put everything out :)
     let $runtime-ms       := ((util:system-time() - $start-time) div xs:dayTimeDuration('PT1S'))  * 1000 
-    return <div>
-                <p>Zu rendern: {count($todo)} Werk(e); gesamte Rechenzeit:
-                    {if ($runtime-ms < (1000 * 60))             then format-number($runtime-ms div 1000, "#.##") || " Sek."
-                      else if ($runtime-ms < (1000 * 60 * 60))  then format-number($runtime-ms div (1000 * 60), "#.##") || " Min."
-                      else                                           format-number($runtime-ms div (1000 * 60 * 60), "#.##") || " Std."
-                    }
-                </p>
-                <hr/>
-                {$gerendert}
-            </div>
+    return
+        <div>
+            <p>Zu rendern: {count($todo)} Werk(e); gesamte Rechenzeit:
+                {if ($runtime-ms < (1000 * 60))             then format-number($runtime-ms div 1000, "#.##") || " Sek."
+                  else if ($runtime-ms < (1000 * 60 * 60))  then format-number($runtime-ms div (1000 * 60), "#.##") || " Min."
+                  else                                           format-number($runtime-ms div (1000 * 60 * 60), "#.##") || " Std."
+                }
+            </p>
+            <hr/>
+            {$gerendert}
+        </div>
 };
 
-declare function admin:renderFragment ($work as node(), $wid as xs:string, $target as node(), $targetindex as xs:integer, $fragmentationDepth as xs:integer, $prevId as xs:string?, $nextId as xs:string?, $serverDomain as xs:string?) {
+declare
+function admin:renderFragment ($work as node(), $wid as xs:string, $target as node(), $targetindex as xs:integer, $fragmentationDepth as xs:integer, $prevId as xs:string?, $nextId as xs:string?, $serverDomain as xs:string?) as element(xhtml:div) {
     let $tei2htmlXslt      := doc($config:resources-root || '/xsl/render-fragments2.xsl')
     let $targetid          := xs:string($target/@xml:id)
     let $xsl-parameters    :=  <parameters>
@@ -471,25 +525,27 @@ declare function admin:renderFragment ($work as node(), $wid as xs:string, $targ
     let $fileName       := format-number($targetindex, "0000") || "_" || $targetid || ".html"
     let $storeStatus    := if ($html) then admin:saveFile($wid, $fileName, $html, "html") else ()
 
-    return <div style="border:'3px solid black';background-color:'grey';">
-                <code>{$wid}/{$fileName}:<br/>
-                        target xml:id={$targetid} <br/>
-                        prev xml:id={$prevId} <br/>
-                        next xml:id={$nextId} <br/>
-                </code>
-                {$html}
-           </div> 
+    return
+        <div style="border:'3px solid black';background-color:'grey';">
+            <code>{$wid}/{$fileName}:<br/>
+                    target xml:id={$targetid} <br/>
+                    prev xml:id={$prevId} <br/>
+                    next xml:id={$nextId} <br/>
+            </code>
+            {$html}
+        </div> 
 };
 
 (: Generate fragments for sphinx' indexer to grok :)
-declare function admin:sphinx-out ($node as node(), $model as map(*), $wid as xs:string*, $mode as xs:string?) {
-                (:
-                   Diese Elemente liefern wir an sphinx aus:                text//(p|head|item|note|titlePage)
-                   Diese weiteren Elemente enthalten ebenfalls Textknoten:        (fw hi l g body div front)
-                            [zu ermitteln durch distinct-values(collection(/db/apps/salamanca/data)//tei:text[@type = ("work_monograph", "work_volume")]//node()[not(./ancestor-or-self::tei:p | ./ancestor-or-self::tei:head | ./ancestor-or-self::tei:list | ./ancestor-or-self::tei:titlePage)][text()])]
-                   Wir ignorieren fw, während hi, l und g immer schon in p, head, item usw. enthalten sind.
-                   => Wir müssen also noch dafür sorgen, dass front, body und div's keinen Text außerhalb von p, head, item usw. enthalten!
-                :)
+declare
+function admin:sphinx-out ($node as node(), $model as map(*), $wid as xs:string*, $mode as xs:string?) as element() {
+    (:
+        Diese Elemente liefern wir an sphinx aus:                text//(p|head|item|note|titlePage)
+        Diese weiteren Elemente enthalten ebenfalls Textknoten:        (fw hi l g body div front)
+                [zu ermitteln durch distinct-values(collection(/db/apps/salamanca/data)//tei:text[@type = ("work_monograph", "work_volume")]//node()[not(./ancestor-or-self::tei:p | ./ancestor-or-self::tei:head | ./ancestor-or-self::tei:list | ./ancestor-or-self::tei:titlePage)][text()])]
+        Wir ignorieren fw, während hi, l und g immer schon in p, head, item usw. enthalten sind.
+        => Wir müssen also noch dafür sorgen, dass front, body und div's keinen Text außerhalb von p, head, item usw. enthalten!
+    :)
 
     let $start-time       := util:system-time()
 
@@ -625,7 +681,7 @@ declare function admin:sphinx-out ($node as node(), $model as map(*), $wid as xs
                             $sphinx_snippet
                         else ()
 
-(: Now return statistics, schema and the whole document-set :)
+    (: Now return statistics, schema and the whole document-set :)
     let $runtime-ms := ((util:system-time() - $start-time) div xs:dayTimeDuration('PT1S')) * 1000
     return if ($mode = "html") then
                 <html>

@@ -1,12 +1,31 @@
 xquery version "3.1";
 
-import module   namespace   config  = "http://salamanca/config" at "modules/config.xqm";
-import module   namespace   iiif    = "http://salamanca/iiif"   at "modules/iiif.xql";
-import module   namespace   console = "http://exist-db.org/xquery/console";
-import module   namespace   admin   = "http://salamanca/admin"  at "modules/admin.xql";
-declare         namespace   output  = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare         namespace   request = "http://exist-db.org/xquery/request";
-declare          namespace response = "http://exist-db.org/xquery/response";
+(:~ 
+ : iiif-admin XQuery executable
+ : This file calls the iiif interface with admin/write privileges.
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+~:)
+
+declare         namespace output    = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare         namespace request   = "http://exist-db.org/xquery/request";
+declare         namespace response  = "http://exist-db.org/xquery/response";
+declare         namespace xmldb     = "http://exist-db.org/xquery/xmldb";
+import module   namespace console   = "http://exist-db.org/xquery/console";
+import module   namespace admin     = "http://salamanca.school/ns/admin"  at "modules/admin.xql";
+import module   namespace config    = "http://salamanca.school/ns/config" at "modules/config.xqm";
+import module   namespace iiif      = "http://salamanca.school/ns/iiif"   at "modules/iiif.xql";
 
 (:declare option output:method "json";
 declare option output:media-type "application/json";:)

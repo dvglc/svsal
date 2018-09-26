@@ -1,8 +1,26 @@
-xquery version "3.0";
+xquery version "3.1";
 
-declare namespace request           = "http://exist-db.org/xquery/request";
+(:~ 
+ : Sphinx-client XQuery executable
+ : This file contains the sphinx api interface.
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+~:)
+
 declare namespace output            = "http://www.w3.org/2010/xslt-xquery-serialization";
-import module namespace sphinx      = "http://salamanca/sphinx"          at "modules/sphinx.xql";
+declare namespace request           = "http://exist-db.org/xquery/request";
+import module namespace sphinx      = "http://salamanca.school/ns/sphinx"          at "modules/sphinx.xql";
 
 declare option output:media-type "text/html";
 declare option output:method "xhtml";

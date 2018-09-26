@@ -1,11 +1,29 @@
+xquery version "3.1";
+
+(:~ 
+ : i18n-templates XQuery-Module
+ :
+ : For doc annotation format, see
+ : - https://exist-db.org/exist/apps/doc/xqdoc
+ :
+ : For testing, see
+ : - https://exist-db.org/exist/apps/doc/xqsuite
+ : - https://en.wikibooks.org/wiki/XQuery/XUnit_Annotations
+ :
+ : @author Andreas Wagner
+ : @author David Glück
+ : @author Ingo Caesar
+ : @version 1.0
+ :
+ :)
 module namespace intl="http://exist-db.org/xquery/i18n/templates";
 
 (:~
  : i18n template functions. Integrates the i18n library module. Called from the templating framework.
  :)
-import module namespace i18n        = "http://exist-db.org/xquery/i18n" at "i18n.xql";
 import module namespace templates   = "http://exist-db.org/xquery/templates";
-import module namespace config      = "http://salamanca/config";
+import module namespace i18n        = "http://exist-db.org/xquery/i18n"         at "i18n.xql";
+import module namespace config      = "http://salamanca.school/ns/config"       at "config.xqm";
 
 (:~
  : Template function: calls i18n:process on the child nodes of $node.
