@@ -862,7 +862,7 @@ function local:term($node as element(tei:term), $mode as xs:string) {
         local:passthru($node, $mode)
     else if ($mode = "edit") then
         if ($node/@key) then
-            (local:passthru($node, $mode), ' [', string($node/@key), ']')
+            (local:passthru($node, $mode), ' [→', string($node/@key), ']')
         else
             local:passthru($node, $mode)
     else if ($mode = ("html", "work")) then
@@ -897,7 +897,7 @@ function local:name($node as element(*), $mode as xs:string) {
         local:passthru($node, $mode)
     else if ($mode = "edit") then
         if ($node/(@key|@ref)) then
-            (local:passthru($node, $mode), ' [', string-join(($node/@key, $node/@ref), '/'), ']')
+            (local:passthru($node, $mode), ' [→', string-join(($node/@key, $node/@ref), '/'), ']')
         else
             local:passthru($node, $mode)
     else if ($mode = ("html", "work")) then
@@ -962,7 +962,7 @@ function local:bibl($node as element(tei:bibl), $mode as xs:string) {
         local:passthru($node, $mode)
     else if ($mode = "edit") then
         if ($node/@sortKey) then
-            (local:passthru($node, $mode), ' [', replace(string($node/@sortKey), '_', ', '), ']')
+            (local:passthru($node, $mode), ' [→', replace(string($node/@sortKey), '_', ', '), ']')
         else
             local:passthru($node, $mode)
     else if ($mode = "work") then
