@@ -67,6 +67,26 @@ In "constituted" mode, terms or names of persons that are treated in the diction
 
 ### RDF endpoint
 
+Similar to the TEI endpoint, whatever the specific part of a work was that semantic information was requested for, this endpoint always returns the information for the full work, which contains the requested information (semantic web clients should be able to cope with this).
+
+The information includes **metadata** about the work (such as title, author, publisher etc.) using the [SPAR ontologies](http://www.sparontologies.net/) (in particular, the [fabio ontology](http://www.sparontologies.net/ontologies/fabio)). **Structural information** about front- and backmatter, chapters, paragraphs etc. (the type of entities, a label and sometimes information on what other entity they are contained in) is recorded using SPAR's [document component ontology (doco)](http://www.sparontologies.net/ontologies/doco). Information about **citations and references** to persons, places or other works is recorded using SPAR's [citation typing ontology (cito)](http://www.sparontologies.net/ontologies/cito) and using [schema.org's "Book" vocabulary](https://schema.org/Book). We use the [getty thesaurus of geographic names](http://www.getty.edu/research/tools/vocabularies/tgn/index.html), the ["gemeinsame Normdatei" of the German National Library](http://www.dnb.de/DE/Standardisierung/GND/gnd_node.html) and the [thesaurus of the Consortium of European Research Libraries](https://data.cerl.org/thesaurus/_search) as authority data sources.
+
+Finally, information **about the dataset** as a whole (like provenance, authorship etc.) is provided using the [VoID Vocabulary](https://www.w3.org/TR/void/). This information is available on its own at <http://data.salamanca.school/void.ttl> and is linked to from all individual resources.
+
 ### HTML endpoint
 
+This endpoint also accepts the following url parameters:
+
+* `viewer` with an url-encoded url of a iiif canvas contained in the present work (e.g. <https://facs.salamanca.school/iiif/presentation/W0015/canvas/p14>) to open the facsimile viewer also
+* `q` with a search term to be highlighted in the html
+* `mode` with either "orig" or "edit" to select viewing mode
+* `lang` to control the language of the user interface
+
 ### iiif endpoint
+
+<https://facs.salamanca.school/iiif/presentation/W0015/manifest>
+
+## Sources
+
+* Constantin, A., Peroni, S., Pettifer, S., Shotton, D., Vitali, F. (2016). The Document Components Ontology (DoCO). In Semantic Web – Interoperability, Usability, Applicability, 7 (2): 167-181. Amsterdam, The Netherlands: IOS Press. https://doi.org/10.3233/SW-150177
+* Blackwell, Chr., Smith, N. (2014). The Canonical Text Services URN specification, version 2.0.rc.1 <http://cite-architecture.github.io/ctsurn_spec/> (retrieved 2018-10-31).
