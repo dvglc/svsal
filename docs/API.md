@@ -45,7 +45,7 @@ Here are some example identificators:
 * <https://id.salamanca.school/works.W0004:pFOL7V>
 * <https://id.salamanca.school/works.W0013:vol2.frontmatter.p1>
 
-(This way of identifying sections is inspired by the [Canonical Text Services](http://cite-architecture.github.io/ctsurn/overview/) specification, but diverges in some points, such as http instead of urn scheme and the eschewal of ranges and subreferences. Depending on user feedback, we may implement this later.)
+(This way of identifying sections is inspired by the [Canonical Text Services](http://cite-architecture.github.io/ctsurn/overview/) specification, but diverges in some points, such as http instead of urn scheme and the eschewal of ranges and subreferences.^[Cf. <https://blog.salamanca.school/de/2016/11/15/whats-in-a-uri-part-1/>, also mentioning more literature.] Depending on user feedback, we may implement this later.)
 
 ## Endpoint-specific information
 
@@ -82,6 +82,8 @@ This endpoint also accepts the following url parameters:
 * `mode` with either "orig" or "edit" to select viewing mode
 * `lang` to control the language of the user interface
 
+Since the projects' html files are very huge in some cases, it was necessary to split them and load them incrementally in the background. This makes a translation from work/passage identifiers to html anchors necessary, and the html endpoint redirects to <https://www.salamanca.school/work.html>, where the actual resource is constructed from the parameters mentioned above, from the translation process and eventually from environment factors like the browser's language preference settings. This way, <https://id.salamanca.school/works.W0015:20.2.4.10> might resolve finally to <https://www.salamanca.school/en/work.html?wid=W0015&frag=0005_W0015-00-0016-d1-03ed#W0015-00-0022-d4-03f7>.
+
 ### iiif endpoint
 
 <https://facs.salamanca.school/iiif/presentation/W0015/manifest>
@@ -90,3 +92,4 @@ This endpoint also accepts the following url parameters:
 
 * Constantin, A., Peroni, S., Pettifer, S., Shotton, D., Vitali, F. (2016). The Document Components Ontology (DoCO). In Semantic Web – Interoperability, Usability, Applicability, 7 (2): 167-181. Amsterdam, The Netherlands: IOS Press. https://doi.org/10.3233/SW-150177
 * Blackwell, Chr., Smith, N. (2014). The Canonical Text Services URN specification, version 2.0.rc.1 <http://cite-architecture.github.io/ctsurn_spec/> (retrieved 2018-10-31).
+* Smith, N., Blackwell, Chr. W. (2012). "Four URLs, Limitless Apps: Separation of Concerns in the Homer Multitext Architecture". In Donum Natalicium Digitaliter Confectum Gregorio Nagy Septuagenario a Discipulis Collegis Familiaribus Oblatum: A Virtual Birthday Gift Presented to Gregory Nagy on Turning Seventy by His Students, Colleagues, and Friends. Washington D.C.: Center for Hellenic Studies <https://chs.harvard.edu/CHS/article/display/4846> (retrieved 2018-11-07).
