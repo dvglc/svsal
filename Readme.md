@@ -25,7 +25,7 @@ Configuration is concentrated in a single file modules/config.xqm. This file is 
 * a sphinxsearch search server, accessed via an opensearch-compatible php interface
 * a wordpress blog
 
-Technical documentation can be found in <docs/Technical.md>.
+Technical documentation can be found in <docs/Technical.md> and a description of the API is in <docs/API.md>.
 
 ## Caveats/provisos
 
