@@ -4,11 +4,11 @@ This is the technical documentation for the API of the web application "The Scho
 available at <https://github.com/digicademy/svsal> and online at <https://www.salamanca.school/>.
 The general API is accessible at <https://api.salamanca.school/>.
 
-<div style="font-style: italic; text-align: right">(Last edited: Andreas Wagner, 2018-10-31)</div>
+<div style="font-style: italic; text-align: right">(Last edited: Andreas Wagner, 2018-11-07)</div>
 
 ## Services and formats
 
-Under <https://api.salamanca.school>, we provide the following endpoints^[In the context of RESTful APIs, these endpoints respond to GET requests only, in other words, the resources are read-only.]:
+Under <https://api.salamanca.school>, we provide the following endpoints<sup id="anchor1">[1](#fn1)</sup>:
 
 * **/tei/** for [TEI P5](http://www.tei-c.org/release/doc/tei-p5-doc/en/html/index.html) xml (this is also being redirected to from <https://tei.salamanca.school/>)
 * **/txt/** for plaintext
@@ -45,7 +45,7 @@ Here are some example identificators:
 * <https://id.salamanca.school/works.W0004:pFOL7V>
 * <https://id.salamanca.school/works.W0013:vol2.frontmatter.p1>
 
-(This way of identifying sections is inspired by the [Canonical Text Services](http://cite-architecture.github.io/ctsurn/overview/) specification, but diverges in some points, such as http instead of urn scheme and the eschewal of ranges and subreferences.^[Cf. <https://blog.salamanca.school/de/2016/11/15/whats-in-a-uri-part-1/>, also mentioning more literature.] Depending on user feedback, we may implement this later.)
+(This way of identifying sections is inspired by the [Canonical Text Services](http://cite-architecture.github.io/ctsurn/overview/) specification, but diverges in some points, such as http instead of urn scheme and the eschewal of ranges and subreferences.<sup id="anchor2">[2](#fn2)</sup> Depending on user feedback, we may implement this later.)
 
 ## Endpoint-specific information
 
@@ -77,16 +77,26 @@ Finally, information **about the dataset** as a whole (like provenance, authorsh
 
 This endpoint also accepts the following url parameters:
 
-* `viewer` with an url-encoded url of a iiif canvas contained in the present work (e.g. <https://facs.salamanca.school/iiif/presentation/W0015/canvas/p14>) to open the facsimile viewer also
+* `viewer` with an url-encoded url of a iiif canvas contained in the present work to open the facsimile viewer also (on the respective page)
 * `q` with a search term to be highlighted in the html
-* `mode` with either "orig" or "edit" to select viewing mode
 * `lang` to control the language of the user interface
+* `mode` with either "orig" or "edit" to select viewing mode
 
-Since the projects' html files are very huge in some cases, it was necessary to split them and load them incrementally in the background. This makes a translation from work/passage identifiers to html anchors necessary, and the html endpoint redirects to <https://www.salamanca.school/work.html>, where the actual resource is constructed from the parameters mentioned above, from the translation process and eventually from environment factors like the browser's language preference settings. This way, <https://id.salamanca.school/works.W0015:20.2.4.10> might resolve finally to <https://www.salamanca.school/en/work.html?wid=W0015&frag=0005_W0015-00-0016-d1-03ed#W0015-00-0022-d4-03f7>.
+Since the projects' html files are very huge in some cases, it was necessary to split them and load them incrementally in the background. This makes a translation from work/passage identifiers to html anchors necessary, and the html endpoint redirects to <https://www.salamanca.school/work.html>, where the actual resource is constructed from the parameters mentioned above, from the translation process and eventually from environment factors like the browser's language preference settings. This way, <https://id.salamanca.school/works.W0015:20.2.4.10?q=milagro&viewer=https://facs.salamanca.school/iiif/presentation/W0015/canvas/p14> might resolve finally to <https://www.salamanca.school/en/work.html?wid=W0015&frag=0005_W0015-00-0016-d1-03ed&q=milagro#W0015-00-0022-d4-03f7>.
+
+**NOTE: At the moment (2018-11-07), the html endpoint cannot handle the *version* identifier of the work component of the passage identifier. It would need to translate this to an explicit `mode` url parameter (which can be handled), but it doesn't. This will be fixed soon.**
 
 ### iiif endpoint
 
 <https://facs.salamanca.school/iiif/presentation/W0015/manifest>
+
+## Notes
+
+<b id="fn1">1</b> In the context of RESTful APIs, these endpoints respond to GET requests only, in other words, the resources are read-only. [↩](#anchor1)
+
+<b id="fn2">2</b> Cf. <https://blog.salamanca.school/de/2016/11/15/whats-in-a-uri-part-1/>, also mentioning more literature. [↩](#anchor2)
+
+
 
 ## Sources
 
