@@ -8,13 +8,19 @@
                 <title xml:lang="en">Help texts for the Search facility of this edition</title>
                 <title xml:lang="es">Textos de ayudo port la página de buscada de esta edición</title>
                 <author>
+                    <surname>Caesar</surname>, <forename>Ingo</forename>
+                </author>
+                <author role="translator">
+                    <surname>Cárdenas</surname>, <forename>Carolina</forename>
+                </author>
+                <author>
                     <surname>Glück</surname>, <forename>David</forename>
+                </author>
+                <author role="translator">
+                    <surname>Rico Carmona</surname>, <forename>Cindy</forename>
                 </author>
                 <author>
                     <surname>Wagner</surname>, <forename>Andreas</forename>
-                </author>
-                <author>
-                    <surname>Caesar</surname>, <forename>Ingo</forename>
                 </author>
             </titleStmt>
             <editionStmt>
@@ -47,7 +53,7 @@
                     <orgName xml:lang="de">Goethe-Universität Frankfurt/Main</orgName>
                     <email>info@salamanca.adwmainz.de</email>
                 </distributor>
-                <pubPlace role="digitzedEd" xml:lang="de">
+                <pubPlace role="digitizedEd" xml:lang="de">
             Frankfurt/Main (<ref type="url" target="http://salamanca.adwmainz.de/">http://salamanca.adwmainz.de/</ref>)
         </pubPlace>
                 <date type="digitizedEd" when="2013">2013</date>
@@ -66,8 +72,9 @@
             Zuletzt aktualisiert am 2015-06-25, um 12:25 Uhr.</p>
             </sourceDesc>
         </fileDesc>
-        <revisionDesc status="a_raw">
+        <revisionDesc status="g_enriched_approved">
             <listChange>
+                <change who="#DG" when="2019-07-01" status="a_raw" xml:lang="en">Fixed some language errors and improved wording</change>
                 <change who="#DG #CRC #CC" when="2018-05-11" status="a_raw" xml:lang="en">Add Spanish version for search help</change>
                 <change who="#DG" when="2018-05-09" status="a_raw" xml:lang="es">Add English version for search help</change>
                 <change who="#AW" when="2015-06-25" status="a_raw" xml:lang="de">TEI-kompatibel gemacht</change>
@@ -85,34 +92,34 @@
         <p xml:id="p_sdfgcsrbc">Im linken Dropdown-Menu kann zwischen verschiedenen Such-Modi ausgewählt werden:
             <list type="ordered">
                 <item xml:id="item_everything_de">
-                    <term xml:id="term_everything_de" ref="#option1">Quellen, Wörterbuch, WP etc.: Volltext allgemein</term>
+                    <term xml:id="term_everything_de" ref="#option1">Alle Datenquellen</term>
                     <gloss target="#term_everything_de">sucht nach den Suchbegriffen über alle Textgattungen, d.h.
                     inklusive der biographischen und der sachlichen Wörterbuch-Artikel sowie der Abstracts und Keywords der Working Papers. Die Ergebnisse werden
                     nach Textgattung gruppiert angezeigt, ggf. mit der Möglichkeit, die Suche innerhalb einer solchen Gruppe zu wiederholen und mehr bzw.
                     detailliertere Ergebnisse zu erhalten. (Dies ist der Standard-Suchmodus.)</gloss>
                                     </item>
                 <item xml:id="item_corpus_de">
-                    <term xml:id="term_corpus_de" ref="#option2">Corpus: Volltext</term>
+                    <term xml:id="term_corpus_de" ref="#option2">Werke: Volltext</term>
                     <gloss target="#term_corpus_de">sucht nach den Suchbegriffen im kompletten Text aller bei uns edierten Werke.</gloss>
                                     </item>
                 <item xml:id="item_headings_de">
-                    <term xml:id="term_headings_de" ref="#option3">Corpus: Überschriften</term>
+                    <term xml:id="term_headings_de" ref="#option3">Werke: Überschriften</term>
                     <gloss target="#term_headings_de">sucht nach den Suchbegriffen in allen Quelltexten, jedoch dort nur in den Überschriften.</gloss>
                                     </item>
                 <item xml:id="item_notes_de">
-                    <term xml:id="term_notes_de" ref="#option4">Corpus: Noten</term>
+                    <term xml:id="term_notes_de" ref="#option4">Werke: Noten</term>
                     <gloss target="#term_notes_de">sucht nach den Suchbegriffen in allen Quelltexten, jedoch dort nur in den Marginal-, Fuß- und Endnoten.</gloss>
                                     </item>
-                <item xml:id="item_dict_de">
+                <!--<item xml:id="item_dict_de">
                     <term xml:id="term_dict_de" ref="#option8">Wörterbuch: Volltext</term>
                     <gloss target="#term_dict_de">sucht nach den Suchbegriffen im Volltext aller Einträge des Wörterbuchs der juridisch-politischen Sprache der Schule von Salamanca.</gloss>
-                                    </item>
-                <item xml:id="item_entries_de">
+                                    </item>-->
+                <!--<item xml:id="item_entries_de">
                     <term xml:id="term_entries_de" ref="#option9">Wörterbuch: Einträge</term>
                     <gloss target="#term_entries_de">sucht nach den Suchbegriffen in Artikeln des Wörterbuchs jedoch dort nur in den Überschriften.</gloss>
-                                    </item>
+                                    </item>-->
                 <item xml:id="item_wp_de">
-                    <term xml:id="term_wp_de" ref="#optiona">Working Papers: Abstract, Keywords etc.</term>
+                    <term xml:id="term_wp_de" ref="#optiona">Working Papers: Abstract und Metadaten</term>
                     <gloss target="#term_wp_de">sucht nach den Suchbegriffen in den Metadaten der Working Papers. Auf die Volltexte greift unsere Suche leider nicht zu.</gloss>
                                     </item>
             </list>
@@ -218,6 +225,28 @@ lex SENTENCE naturalis =&gt; sucht nach einem Satz, in dem sowohl lex als auch n
             </eg>
         </p>
     </div>
+    
+    <div type="section" xml:id="div_single_work_de">
+        <head xml:id="head_single_work_de">Suche in einzelnen Werken</head>
+        <p xml:id="p_lakjsfas">Die globale Suche wie auch die Suche innerhalb bestimmter Datenquellen-Kategorien
+            ("Werke: Volltext", "Werke: Noten", "Working Papers: ..." etc.) beziehen sich stets auf alle Texte innerhalb der jeweiligen 
+            Kategorie. Eine selektive Suche in einzelnen Werken der digitalen Quellensammlung ist momentan nicht
+            über die grafische Benutzeroberfläche möglich. Technisch Experimentierfreudige können jedoch bereits jetzt 
+            die Suche mittels des "@sphinx_work"-Feldoperators auf einzelne Werke beschränken.</p> 
+        <p xml:id="p_kjasdlas">Dazu ist es zunächst notwendig, die genaue "Werk-ID" des jeweiligen Werkes zu kennen. 
+            Diese Werk-ID ist fünfstellig und besteht aus der Initiale "W" (für engl. "work") gefolgt von 4 Ziffern. Sie kann 
+            am schnellsten in werkspezifischen URLs wie jenen der Werk-Leseansicht oder der Katalogeinträge im "wid="-Parameter 
+            gefunden werden; außerdem findet sie sich z.B. im Zitiervorschlag zu einem Werk, wie er etwa in dessen
+            Katalogeintrag angegeben ist, in den letzten fünf Stellen der URI: "https://id.salamanca.school/texts/[Werk-ID]".
+        </p>
+        <p xml:id="p_oijdfsi">Ist die Werk-ID ermittelt, kann die Suche im Such-Feld mittels des Feld-Operators folgendermaßen 
+            eingeschränkt werden:</p>
+        <eg>[Suchbegriff] @sphinx_work ^[Werk-ID]</eg>
+        <p xml:id="p_lshdfjlsdjf">Die Suche nach dem Begriff "lex" nur in Diego de Castillos "Tratado de Cuentas" (Werk-ID: "W0004") wäre z.B. mithilfe 
+            des folgenden Eintrags im Suchfeld möglich:</p>
+        <eg>lex @sphinx_work ^W0004</eg>
+        <p xml:id="p_saioudas">Ansonsten folgt die Such-Syntax den oben angegebenen Regeln.</p>
+    </div>
 
     <div type="section" xml:id="div_mehr_infos_de">
         <head xml:id="head_mehr_infos">Wo finde ich weitere Informationen?</head>
@@ -236,12 +265,12 @@ die konstituierte Lesart durchsucht.</note>
             <div type="section" xml:id="div_searchHelp_en" xml:lang="en">
                 
                 <div type="section" xml:id="div_modi_en">
-                    <head xml:id="head_modi_en">The Different Search Modes</head>
+                    <head xml:id="head_modi_en">Search Modes</head>
                     <p xml:id="p_sdfgcerbc">In the dropdown menu on the left hand side, you can choose 
                         among different search modes:
                         <list type="ordered">
                             <item xml:id="item_everything_en">
-                                <term xml:id="term_everything_en" ref="#option1">Sources, dictionary, WP, etc.: full text (all)</term>
+                                <term xml:id="term_everything_en" ref="#option1">All data sources</term>
                                 <gloss target="#term_everything_en">searches for terms across all types of text, that is, including 
                                     biographic and topic-related dictionary articles as well as abstracts and keywords from 
                                     the workin papers. The results are grouped according to text types, possibly offering an option 
@@ -249,27 +278,27 @@ die konstituierte Lesart durchsucht.</note>
                                     (This is the standard mode of search.)</gloss>
                             </item>
                             <item xml:id="item_corpus_en">
-                                <term xml:id="term_corpus_en" ref="#option2">Corpus: Full Text</term>
-                                <gloss target="#term_corpus_en">searches for terms in the full text of all works in the complete digital edition.</gloss>
+                                <term xml:id="term_corpus_en" ref="#option2">Works: full text</term>
+                                <gloss target="#term_corpus_en">searches for terms in the full texts of all (published) works throughout the complete digital collection of sources.</gloss>
                             </item>
                             <item xml:id="item_headings_en">
-                                <term xml:id="term_headings_en" ref="#option3">Corpus: Headings</term>
+                                <term xml:id="term_headings_en" ref="#option3">Works: headings</term>
                                 <gloss target="#term_headings_en">searches for terms in all works, but only within their headings.</gloss>
                             </item>
                             <item xml:id="item_notes_en">
-                                <term xml:id="term_notes_en" ref="#option4">Corpus: Notes</term>
+                                <term xml:id="term_notes_en" ref="#option4">Works: notes</term>
                                 <gloss target="#term_notes_en">searches for terms in all works, but only within marginal, bottom, and end notes.</gloss>
                             </item>
-                            <item xml:id="item_dict_en">
+                            <!--<item xml:id="item_dict_en">
                                 <term xml:id="term_dict_en" ref="#option8">Dictionary: Full Text</term>
                                 <gloss target="#term_dict_en">searches for terms in the full text of all entries in the 
                                     dictionary of juridical-political language of the School of Salamanca.</gloss>
-                            </item>
-                            <item xml:id="item_entries_en">
+                            </item>-->
+                            <!--<item xml:id="item_entries_en">
                                 <term xml:id="term_entries_en" ref="#option9">Dictionary: Entries</term>
                                 <gloss target="#term_entries_en">searches for terms in the articles of the dictionary, but only within the 
                                     headings therein.</gloss>
-                            </item>
+                            </item>-->
                             <item xml:id="item_wp_en">
                                 <term xml:id="term_wp_en" ref="#optiona">Working Papers: Abstract, Keywords etc.</term>
                                 <gloss target="#term_wp_en">searches for terms in the metadata of the working papers. The full text 
@@ -378,6 +407,29 @@ die konstituierte Lesart durchsucht.</note>
                     </p>
                 </div>
                 
+                <div type="section" xml:id="div_single_work_en">
+                    <head xml:id="head_single_work_en">Search within Single Works</head>
+                    <p xml:id="p_lakjsfass">When searching globally or within a specific category of "data sources" 
+                        ("Works: full text", "Works: headings", "Working Papers: ..."), all texts (of the selected category) are targeted 
+                        through the search. A more selective search for single works (instead of the whole corpus) is not 
+                        possible by means of the graphical user interface at the moment. However, the technically adventurous 
+                        may limit their search queries already through the "@sphinx_work" field operator.</p> 
+                    <p xml:id="p_kjassdlas">For this purpose, it is necessary to know the specific "work id" of the respective work. 
+                        This five-place id consists of the initial "W" (for "work") followed by four digits and can be found in 
+                        URLs of work-specific views (such as the reading view or the catalogue entry for a work) in the "wid=" parameter;
+                        alternatively, the citation proposal for a work, to be found in its catalogue entry, contains the work id in its URL:
+                        "https://id.salamanca.school/texts/[work id]".
+                    </p>
+                    <p xml:id="p_oijsdfsi">Once the respective work's id has been identified, the search can be limited to this 
+                        work through the field operator in the following way:</p>
+                    <eg>[query term] @sphinx_work ^[work id]</eg>
+                    <p xml:id="p_lshdfjlssdjf">For example, searching for the term "lex" only in Diego de Castillo's "Tratado de Cuentas" 
+                        (which has the work id "W0004") is possible by means of the following query (to be entered in the search field):
+                    </p>
+                    <eg>lex @sphinx_work ^W0004</eg>
+                    <p xml:id="p_saiousdas">Apart from that, the search syntax follows the guidelines stated above.</p>
+                </div>
+                
                 <div type="section" xml:id="div_more_info_en">
                     <head xml:id="head_more_info_en">Where to Find more Information</head>
                     <p xml:id="p_juzserdvnzu">
@@ -399,8 +451,7 @@ die konstituierte Lesart durchsucht.</note>
                     <p xml:id="p_sdfgcerbrc">En el menú desplegable de la izquierda se puede elegir entre
                         diferentes modos de búsqueda: <list type="ordered">
                             <item xml:id="item_everything_es">
-                                <term xml:id="term_everything_es" ref="#option1">Fuentes, diccionario, etc.:
-                                    Texto Completo (todos)</term>
+                                <term xml:id="term_everything_es" ref="#option1">Búsqueda global</term>
                                 <gloss target="#term_everything_es">busca los términos de búsqueda en todos los
                                     tipos de texto, es decir, incluidos los artículos biográficos y objetivos,
                                     así como los resúmenes y las palabras clave de los documentos de trabajo.
@@ -410,32 +461,32 @@ die konstituierte Lesart durchsucht.</note>
                                     predeterminado)</gloss>
                             </item>
                             <item xml:id="item_corpus_es">
-                                <term xml:id="term_corpus_es" ref="#option2">Corpus: Texto Completo</term>
+                                <term xml:id="term_corpus_es" ref="#option2">Obras: Texto Completo</term>
                                 <gloss target="#term_corpus_es">busca los términos de búsqueda en todas las
                                     obras editadas por nosotros.</gloss>
                             </item>
                             <item xml:id="item_headings_es">
-                                <term xml:id="term_headings_es" ref="#option3">Corpus: Títulos</term>
+                                <term xml:id="term_headings_es" ref="#option3">Obras: Títulos</term>
                                 <gloss target="#term_headings_es">busca los términos de búsqueda en todas las
                                     fuentes originales, pero solo en los títulos.</gloss>
                             </item>
                             <item xml:id="item_notes_es">
-                                <term xml:id="term_notes_es" ref="#option4">Corpus: Notas</term>
+                                <term xml:id="term_notes_es" ref="#option4">Obras: Notas</term>
                                 <gloss target="#term_notes_es">busca los términos de búsqueda en todos los
                                     textos fuente, pero solo en las notas marginales, de pie de página y
                                     finales.</gloss>
                             </item>
-                            <item xml:id="item_dict_es">
+                            <!--<item xml:id="item_dict_es">
                                 <term xml:id="term_dict_es" ref="#option8">Diccionario: Texto Completo</term>
                                 <gloss target="#term_dict_es">busca las palabras de búsqueda en el texto
                                     completo de todas las entradas del diccionario del lenguaje
                                     jurídico-político de la Escuela de Salamanca.</gloss>
-                            </item>
-                            <item xml:id="item_entries_es">
+                            </item>-->
+                            <!--<item xml:id="item_entries_es">
                                 <term xml:id="term_entries_es" ref="#option9">Diccionario: Entradas</term>
                                 <gloss target="#term_entries_es">busca los términos de búsqueda en los artículos
                                     del diccionario, pero solo en los títulos.</gloss>
-                            </item>
+                            </item>-->
                             <item xml:id="item_wp_es">
                                 <term xml:id="term_wp_es" ref="#optiona">Working Papers: Resumen, Palabras
                                     clave, etc.</term>
@@ -474,8 +525,7 @@ die konstituierte Lesart durchsucht.</note>
                 
                 <div type="section" xml:id="div_multiple_es">
                     <head xml:id="head_multipleTerms_es">¿Cómo trabajar con múltiples términos de búsqueda?</head>
-                    <p xml:id="p_swsaeaseresa"> La entrada de varios términos de búsqueda hace que <hi
-                        rendition="#it">todos</hi> los términos de búsqueda estén presentes en las secciones
+                    <p xml:id="p_swsaeaseresa"> La entrada de varios términos de búsqueda hace que <hi rendition="#it">todos</hi> los términos de búsqueda estén presentes en las secciones
                         de texto buscadas (implícito y operador). Si no se desea, los términos deben separase
                         con una barra vertical "|" como operador de orden:: 
                         
@@ -545,12 +595,35 @@ die konstituierte Lesart durchsucht.</note>
                     </p>
                 </div>
                 
+                <div type="section" xml:id="div_single_work_es">
+                    <head xml:id="head_single_work_es">Busqueda en obras individuales</head>
+                    <p xml:id="p_lakfjsfass">La búsqueda global, así como la búsqueda dentro de 
+                        ciertas categorías de fuentes de datos ("Obras: Texto completo", "Obras: Notas", "Working papers: ...", etc.) 
+                        siempre se refieren a todos los textos dentro de la categoría respectiva. Una búsqueda selectiva en obras 
+                        individuales de la colección de fuentes digitales no es posible actualmente a través de la interfaz 
+                        gráfica de usuario. Sin embargo, aquellos que disfrutan la experimentación técnica pueden ahora restringir 
+                        la búsqueda a obras individuales utilizando el operador de campo "@sphinx_work".</p>
+                    <p xml:id="p_kjasdlass">Para esto, primero es necesario conocer el "Work id" (el número de identificación) de la obra 
+                        respectiva. Esta identificación tiene cinco dígitos y consta de la inicial "W" 
+                        (equivalente a la palabra inglesa "Work") seguida de 4 dígitos. 
+                        Se puede encontrar más rápidamente en los URL específicos de la obra, como las de la vista de 
+                        lectura de la obra o las entradas de catálogo en el parámetro "wid ="; Además, se encuentran en 
+                        la citación recomendada de una obra, como se indica en su entrada de catálogo, en los últimos cinco dígitos 
+                        del URI: "https://id.salamanca.school/texts/[Werk-ID]".
+                    </p>
+                    <p xml:id="p_oijfsdfsi"> Una vez sea determinada la identificación de la obra, se puede restringir la búsqueda utilizando 
+                        el operador de campo en el campo de búsqueda de la siguiente manera:</p>
+                    <eg>[Término de búsqueda] @sphinx_work ^[work id]</eg>
+                    <p xml:id="p_lshdfsjlsdjf">La búsqueda del término "lex" solo en Diego de Castillos "Tratado de Cuentas" (work id: "W0004") 
+                        sería posible con ayuda de la siguiente entrada en el campo de búsqueda:</p>
+                    <eg>lex @sphinx_work ^W0004</eg>
+                    <p xml:id="p_saifousdas">De lo contrario, la sintaxis de búsqueda sigue las reglas dadas anteriormente.</p>
+                </div>
+                
+                
                 <div type="section" xml:id="div_more_info_es">
                     <head xml:id="head_more_info_es">¿Dónde puedo encontrar más información?</head>
-                    <p xml:id="p_juzserddvnzu"> La búsqueda usa el motor de búsqueda <ref type="url"
-                        target="http://sphinxsearch.com/">Sphinx</ref> versión 2.1.3. La mayoría de la <ref
-                            type="url" target="http://sphinxsearch.com/docs/archives/2.1.3/extended-syntax.html"
-                            >documentación sobre la sintaxis de búsqueda</ref> guardada allí también se aplica a
+                    <p xml:id="p_juzserddvnzu"> La búsqueda usa el motor de búsqueda <ref type="url" target="http://sphinxsearch.com/">Sphinx</ref> versión 2.1.3. La mayoría de la <ref type="url" target="http://sphinxsearch.com/docs/archives/2.1.3/extended-syntax.html">documentación sobre la sintaxis de búsqueda</ref> guardada allí también se aplica a
                         nuestra búsqueda.<note place="margin" xml:id="note_esfweerer">Una excepción importante es
                             la especificación de los operadores de campo "@", que no es accesible en nuestro
                             motor de búsqueda. Se busca siempre el texto fuente en sí (y en la búsqueda de todo,

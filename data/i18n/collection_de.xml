@@ -5,6 +5,10 @@
   <msg key="projectName">Die Schule von Salamanca</msg>
   <msg key="guidelines">Editionsrichtlinien</msg>
   <msg key="works">Werke</msg>
+  <msg key="contact">Kontakt</msg>
+  
+  <!-- project.html -->
+  <msg key="teamDesc">Profile der Mitarbeitenden; Kooperationen und Fachbeirat.</msg>
   
   <!-- index.html -->
   <msg key="introWorks">Digitale Quellensammlung mit 116 Werken, aufbereitet gemäß unserer</msg>
@@ -39,7 +43,7 @@
   
   <msg key="authorsNotice">Biographische Artikel zu den Autoren der Quellensammlung des Projekts 
     "Die Schule von Salamanca" werden (voraussichtlich ab 
-    2019) sukzessive auf dieser Seite veröffentlicht.</msg>
+    2020) sukzessive auf dieser Seite veröffentlicht.</msg>
   
   <!-- work -->
   <msg key="text">Text</msg>
@@ -63,6 +67,30 @@
   <msg key="citeUp">Zitieren</msg>
   <msg key="citeThisWork">Dieses Werk zitieren</msg>
   <msg key="accessedDate">Aufgerufen am</msg>
+  <msg key="ebook">E-Book</msg>
+  <msg key="citeWork">Zitierhinweis für dieses Werk kopieren</msg>
+  <msg key="linkWork">Link zu diesem Werk kopieren</msg>
+  <msg key="txtExp">Plain Text exportieren</msg>
+  <msg key="copyLink">Link kopieren</msg>
+  <msg key="copyCit">Zitierhinweis kopieren</msg>
+  <!-- toolboxes for single text units: -->
+  <msg key="txtExpShort">Text (TXT) exportieren</msg>
+  <msg key="teiExpShort">TEI-XML exportieren</msg>
+  <msg key="openToolboxSect">Toolbox für diesen Textabschnitt öffnen</msg>
+  <msg key="openToolboxPara">Toolbox für diesen Absatz öffnen</msg>
+  <msg key="openToolboxNote">Toolbox für diese Marginalnote öffnen</msg>
+  <msg key="citeSect">Zitierhinweis für diesen Textabschnitt kopieren</msg>
+  <msg key="citePara">Zitierhinweis für diesen Absatz kopieren</msg>
+  <msg key="citeNote">Zitierhinweis für diese Marginalnote kopieren</msg>
+  <msg key="linkSect">Link zu diesem Textabschnitt kopieren</msg>
+  <msg key="linkPara">Link zu diesem Absatz kopieren</msg>
+  <msg key="linkNote">Link zu dieser Marginalnote kopieren</msg>
+  <msg key="teiExpSect">Diesen Textabschnitt als TEI-XML exportieren</msg>
+  <msg key="teiExpPara">Diesen Absatz als TEI-XML exportieren</msg>
+  <msg key="teiExpNote">Diese Marginalnote als TEI-XML exportieren</msg>
+  <msg key="txtExpSect">Diesen Textabschnitt als plain text (TXT) exportieren</msg>
+  <msg key="txtExpPara">Diesen Absatz als plain text (TXT) exportieren</msg>
+  <msg key="txtExpNote">Diese Marginalnote als plain text (TXT) exportieren</msg>
   
   <!-- errors -->
   <msg key="authorNotYetAvailable">Dieser Artikel ist noch nicht verfügbar.</msg>
@@ -77,7 +105,8 @@
   <msg key="worksNotice3">, die sukzessive auf dieser Seite zur Verfügung gestellt werden. 
     Hierfür werden die Texte den Spezifikationen der Text Encoding Initiative (TEI) entsprechend aufbereitet;
     für nähere Informationen siehe die </msg>
-  <msg key="alphaEditors">Herausgeber (in alphabetischer Reihenfolge)</msg>
+  <msg key="techEditors">Technische Redaktion</msg>
+  <msg key="scholEditors">Fachwissenschaftliche Redaktion</msg>
   <msg key="editors">Herausgeber</msg>
   <msg key="series">Reihe</msg>
   <msg key="editionSeries">Die Schule von Salamanca. Eine Digitale Quellensammlung</msg>
@@ -123,6 +152,7 @@
   <msg key="facsimiles">Faksimiles</msg>
   <msg key="proposedCitation">Zitiervorschlag</msg>
   <msg key="extent">Umfang, Format</msg>
+  <msg key="partOfMultivol">Teil eines mehrbändigen Werks</msg>
   
   <msg key="latin">Latein</msg>
   <msg key="spanish">Spanisch</msg>
@@ -146,10 +176,11 @@
   <msg key="metaAuthors">Überblick über die Autoren, deren Texte in der Quellenedition und die weiterhin durch biographische Artikel beschrieben sind.</msg>
   <msg key="metaDictionary">Überblick über die im Projekt erarbeiteten Sachartikel des Wörterbuchs der juridisch-politischen Sprache der Schule von Salamanca</msg>
   <msg key="metaWPs">Überblick über die Working Papers zur Schule von Salamanca, die im Rahmen der vom Projekt veranstalteten Reihe erschienen sind.</msg>
+  <msg key="metaParticipants">Überblick über die am Projekt "Die Schule von Salamanca" beteiligten Personen.</msg>
   
   <!-- dictionary -->
   <msg key="dictUnderConstruction">Hier entsteht das Wörterbuch der juristisch-politischen Sprache der Schule von Salamanca: ca. 200 Artikel mit lateinischen und spanischen Lemmata, den Quellen selbst entnommen. 
-    Die Artikel werden voraussichtlich ab 2019 sukzessive veröffentlicht.</msg>
+    Die Artikel werden voraussichtlich ab 2020 sukzessive veröffentlicht.</msg>
   
   <!-- project.html -->
   <msg key="guidelinesDecl">Beschreibung der Editionsprinzipien und der Textkodierung.</msg>
@@ -167,6 +198,9 @@
   <!-- Search -->
   <msg key="searchFor">Suche nach</msg>
   <msg key="allResults">Alle</msg>
+  <msg key="sphinxHelp">Hilfe</msg>
+  <msg key="prevWorks">Vorige Werke</msg>
+  <msg key="nextWorks">Nächste Werke</msg>
   
   <!-- general language -->
   <msg key="of">von</msg>
@@ -185,9 +219,86 @@
   <msg key="furtherInformationTitle">Weitere Informationen</msg>
   <msg key="listOfSources">Liste aller Quellen</msg>
   
+  <!-- project participants -->
+  <msg key="participantsTitle">Projektbeteiligte</msg>
+  <msg key="projectTeamConsultants">Projektbeteiligte</msg>
+  <msg key="projectDirectors">Projektleiter</msg>
+  <msg key="projectTeam">Projektmitarbeitende</msg>
+  <msg key="projectAdvBoard">Beirat</msg>
+  <msg key="projectCooperators">Kooperationspartner</msg>
+  <msg key="projectFormer">Ehemalige Mitarbeitende</msg>
+  <msg key="phoneAbbr">Tel.</msg>
+  <msg key="faxAbbr">Fax</msg>
+  <msg key="email">E-Mail</msg>
+  <msg key="cv">Zur Person</msg>
+  <msg key="researchInterests">Forschungsinteressen</msg>
+  <msg key="selectedPublications">Publikationen (Auswahl)</msg>
+  <msg key="toOverview">Zur Übersicht über die Projektbeteiligten</msg>
+  <msg key="participantsContrib">Mitarbeit bei der Digitalen Quellensammlung</msg>
+  
   <!-- general language abbreviations, conjunctions, phrases, etc. -->
   <msg key="inLow">in</msg>
   <msg key="editedByAbbrLow">hg. von</msg>
+  <msg key="copy">Kopieren</msg>
   
+  <!-- div, milestone, element types for node index derivatives -->
+  <msg key="tei-div-additional">Addendum</msg>
+  <msg key="tei-div-administrative">Administrativ</msg>
+  <msg key="tei-div-article">Artikel</msg>
+  <msg key="tei-div-book">Buch</msg>
+  <msg key="tei-div-chapter">Kapitel</msg>
+  <msg key="tei-div-colophon">Kolophon</msg>
+  <msg key="tei-div-source">Quelle</msg>
+  <msg key="tei-div-commentary">Quellenkommentar</msg>
+  <msg key="tei-div-contents">Inhaltsverzeichnis</msg>
+  <msg key="tei-div-corrigenda">Korrigenda</msg>
+  <msg key="tei-div-dedication">Widmung</msg>
+  <msg key="tei-div-disputation">Disputatio</msg>
+  <msg key="tei-div-doubt">Dubium</msg>
+  <msg key="tei-div-entry">Lemma</msg>
+  <msg key="tei-div-foreword">Vorwort</msg>
+  <msg key="tei-div-gloss">Glosse</msg>
+  <msg key="tei-div-index">Index</msg>
+  <msg key="tei-div-lecture">Relectio</msg>
+  <msg key="tei-div-part">Pars</msg>
+  <msg key="tei-div-preface">Einleitung</msg>
+  <msg key="tei-div-privileges">Privilegien</msg>
+  <msg key="tei-div-question">Quaestio</msg>
+  <msg key="tei-div-section">Abschnitt</msg>
+  <msg key="tei-div-segment">Sectio</msg>
+  <msg key="tei-div-title">Titulus</msg>
+  <msg key="tei-div-law">Lex</msg>
+  <msg key="tei-div-partida">Partida</msg>
+  <msg key="tei-ms-article">Art.</msg>
+  <msg key="tei-ms-number">Num.</msg>
+  <msg key="tei-ms-section">Abschnitt</msg>
+  <msg key="tei-front">Titelei</msg>
+  <msg key="tei-back"/>
+  <msg key="tei-argument">Zusammenfassung</msg>
+  <msg key="tei-p">Absatz</msg>
+  <msg key="tei-signed">Signatur</msg>
+  <msg key="tei-head">Titel</msg>
+  <msg key="tei-label">Titel</msg>
+  <msg key="tei-table">Tabelle</msg>
+  <msg key="tei-titlePage">Titelseite</msg>
+  <msg key="tei-note">Marginalnote</msg>
+  <msg key="tei-list">Liste</msg>
+  <msg key="tei-item">Eintrag</msg>
+  <msg key="tei-lg">Gedicht</msg>
+  <msg key="tei-text-work_volume">Band</msg>
+  <msg key="tei-generic">Abschnitt</msg>
+  
+  <!-- stats -->
+  <msg key="editFacsLow">digital edierte Druckseiten</msg>
+  <msg key="editFacsUp">Digital edierte Druckseiten</msg>
+  <msg key="digiFacsLow">digitalisierte Faksimiles</msg>
+  <msg key="digiFacsUp">Digitalisierte Faksimiles</msg>
+  <msg key="charsUp">Zeichen</msg>
+  <msg key="tokensLow">Tokens</msg>
+  <msg key="tokensUp">Tokens</msg>
+  <msg key="wordsLow">Wörter</msg>
+  <msg key="wordsUp">Wörter</msg>
+  <msg key="wordFormsLow">Wortformen</msg>
+  <msg key="wordFormsUp">Wortformen</msg>
   
 </catalogue>

@@ -1,0 +1,185 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:i18n="http://exist-db.org/xquery/i18n" data-template="i18n:translate" data-template-catalogues="data/i18n">
+    <head>
+        <title>SvSal Mirador Instance</title>
+        <link rel="stylesheet" type="text/css" href="resources/css/mirador-combined.css"/>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
+        <!-- ==== Scripts ==== -->
+        <!-- - - Piwik for visitor stats (modified to enable caching and compression) - - -->
+        <!--<script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+      _paq.push(["setCookieDomain", "*.salamanca.school"]);
+      _paq.push(["setDomains", ["*.salamanca.school"]]);
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//stats.adwmainz.net/";
+        _paq.push(['setTrackerUrl', u+'js/']);
+/*          _paq.push(['setTrackerUrl', u+'piwik.php']); */
+        _paq.push(['setSiteId', 20]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true;
+/*          g.src=u+'piwik.js'; */
+        g.src=u+'js/';
+        s.parentNode.insertBefore(g,s);
+      })();
+    </script>-->
+        <!-- End Piwik Code -->
+        
+        <!-- ==== favIcon ==== -->
+        <link rel="icon" type="image/png" href="resources/favicons/favicon-32x32.png" sizes="32x32"/>
+        <link rel="icon" type="image/png" href="resources/favicons/favicon-194x194.png" sizes="194x194"/>
+        <link rel="icon" type="image/png" href="resources/favicons/favicon-96x96.png" sizes="96x96"/>
+        <link rel="icon" type="image/png" href="resources/favicons/android-chrome-192x192.png" sizes="192x192"/>
+        <link rel="icon" type="image/png" href="resources/favicons/favicon-16x16.png" sizes="16x16"/>
+        <link rel="manifest" href="resources/favicons/manifest.json"/>
+        <meta name="msapplication-TileColor" content="#ffffff"/>
+        <meta name="msapplication-TileImage" content="resources/favicons/mstile-144x144.png"/>
+        <meta name="theme-color" content="#ffffff"/>
+    </head>
+    
+    <body id="body">
+        <div id="content"/>
+        
+        <script type="text/javascript" src="resources/js/mirador-2.7.0/mirador.min.js"/>
+        
+        
+        <script type="text/javascript" src="//code.jquery.com/ui/1.11.3/jquery-ui.min.js"/>
+        
+        <script type="text/javascript">
+
+        /**
+         * JavaScript Get URL Parameter
+         * 
+         * @param String prop The specific URL parameter you want to retreive the value for
+         * @return String|Object If prop is provided a string value is returned, otherwise an object of all properties is returned
+         */
+        function getUrlParams( prop ) {
+            var params = {};
+            var search = decodeURIComponent( window.location.href.slice( window.location.href.indexOf( '?' ) + 1 ) );
+            var definitions = search.split( '&amp;' );
+    
+            definitions.forEach( function( val, key ) {
+                var parts = val.split( '=', 2 );
+                params[ parts[ 0 ] ] = parts[ 1 ];
+            });
+            return ( prop &amp;&amp; prop in params ) ? params[ prop ] : params;
+        };
+
+        /**
+         * JavaScript Get current Language
+         * 
+         * @return the content of the 'lang' url parameter or a string based on pathname components
+         */
+        function getLang() {
+            if (getUrlParams('lang').length &gt; 0)
+                return getUrlParams('lang')
+            else if (window.location.href.indexOf("/es/") &gt; -1) 
+                return 'es'
+            else if (window.location.href.indexOf("/de/") &gt; -1)
+                return 'de'
+            else
+                return 'en'
+        };
+
+        function setZipUrl() {
+            document.getElementById('downloadImages').href = "https://c104-131.cloud.gwdg.de/sal-facs/" + getUrlParams( 'wid' ) + "/" + getUrlParams( 'wid' ) + ".zip";  // update Download button
+//          $('#viewer')[0].getElementById('downloadImages').href = "http://facs.salamanca.school/" + getUrlParams( 'wid' ) + "/" + getUrlParams( 'wid' ) + ".zip";  // update Download button
+            document.getElementById('downloadImages').setAttribute('download', getUrlParams( 'wid' ) + ".zip");  // update Download button
+        };
+        
+        var MyObjects = {};
+
+        $(document).ready(function(){
+            var $wid = getUrlParams( 'wid' );
+            MyObjects.myMirador = Mirador({
+                id :        "viewer",
+                buildPath : "resources/js/mirador/",
+                layout: "1x1",
+                language: getLang(),
+                mainMenuSettings : {
+                    "show" : true,
+                    "bookmark" : true,
+                    "layouts" : false,
+                    "options" : true,
+                    "fullScreenViewer": true,
+                    "userButtons": [
+                        {
+                            "label": '<i18n:text key="readingView"/>',
+                            "iconClass": "fa fa-file",
+                            "attributes": {
+                                "id": "works",
+                                "aria-hidden": "true",
+                                "href": "work.html?wid=" + $wid
+                            }
+                        },
+                        {
+                            "label": '<i18n:text key="catalogueRecord"/>',
+                            "iconClass": "fa fa-file-text-o",
+                            "attributes": {
+                                "id": "works",
+                                "aria-hidden": "true",
+                                "href": "workDetails.html?wid=" + $wid
+                            }
+                        },
+                        {
+                            "label": '<i18n:text key="download"/>',
+                            "iconClass": "fa fa-download",
+                            "attributes": {
+                                "id": "downloadImages",
+                                "aria-hidden": "true",
+                                "href": "#no-op",
+                                "download": "true"
+                            }
+                        },
+                        {
+                            "label": '<i18n:text key="worksList"/>',
+                            "iconClass": "fa fa-list",
+                            "attributes": {
+                                "id": "works",
+                                "aria-hidden": "true",
+                                "href": "works.html"
+                            }
+                        },
+                        {
+                            "label": '<i18n:text key="legalShort"/>',
+                            "iconClass": "fa fa-balance-scale",
+                            "attributes": {
+                                "id": "legal",
+                                "aria-hidden": "true",
+                                "href": "legal.html"
+                            }
+                        }
+// we could close the popup window from here, and eliminate its titlebar, thus saving space. But then we have nothing to grab for dragging the window around...
+// ,
+//                      {
+//                          "label": "Close",
+//                          "iconClass": "fa fa-window-close",
+//                          "attributes": {
+//                              "id": "close",
+//                              "aria-hidden": "true",
+//                              "href": "#no-op"
+//                          }
+//                      }
+                    ]
+                },
+                showAddFromURLBox : false,
+                openManifestsPage: true,
+                autoHideControls : true,
+                data: <span data-template="iiif:MiradorData">[{"bla": "bleh"}]</span>,
+                windowObjects : <span data-template="iiif:MiradorWindowObject">[{"bla": "bleh"}]</span>
+            });
+
+// Binding to events happens in the parent html file (which includes the present file in an iframe).
+            MyObjects.myMirador.eventEmitter.subscribe('windowAdded', function(){
+                    // console.log("Dispatch mirador.loaded event...");
+                    window.parent.postMessage({ type:'mirador.loaded' },"*");
+                    setTimeout( setZipUrl, 100 );
+                });
+        });
+    </script>
+        
+    </body>
+</html>

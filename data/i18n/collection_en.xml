@@ -22,7 +22,7 @@
   <msg key="contact">Contact</msg>
   <msg key="about">About the Project</msg>
   <msg key="WpAbout">Submit a Working Paper</msg>
-  <msg key="WpIntro">The interdisciplinary Salamanca Working Papers Series offers philosophical, legal, and theological articles related to the School of Salamanca. The series reflects the research done in the project, but also accepts contributions from other scholars. Submitted articles are subject to a double blind peer review. To submit a proposal, please contact us at</msg>
+  <msg key="WpIntro">The interdisciplinary Salamanca Working Papers Series offers philosophical, legal, and theological articles related to the School of Salamanca. The series reflects the research done in the project, but also accepts contributions from other scholars. Submitted articles are subject to a peer review. To submit a proposal, please contact us at</msg>
   <msg key="WpGuidelinesDelayed">Further information for authors is forthcoming.</msg>
   <msg key="WpIntroTitle">Salamanca Working Papers Series (ISSN 2509-5080)</msg>
   <msg key="getAnswers">Get in contact</msg>
@@ -44,6 +44,7 @@
   <msg key="metaAuthors">Overview of the authors represented in the collection of works and discussed in biographical articles.</msg>
   <msg key="metaDictionary">Overview of dictionary entries of the juridical-political language of the School of Salamanca.</msg>
   <msg key="metaWPs">Overview of the working papers on the School of Salamanca published in the context of the project's WP series.</msg>
+  <msg key="metaParticipants">Overview of participants in the project "The School of Salamanca".</msg>
   
   <!-- index.html -->
   <msg key="introSearch">Search in the Digital Collection of works, dictionary and biographical entries, and Working Papers.</msg>
@@ -80,7 +81,7 @@
   <msg key="guidelinesDecl">Description of the edition principles and the encoding of the texts.</msg>
   <msg key="wpCreateDecl">Submit a Working Paper.</msg>
   <msg key="team">Project Team</msg>
-  <msg key="teamDesc">Profiles of the project team on the website of the Academy of Sciences and Literature, Mainz.</msg>
+  <msg key="teamDesc">Profiles of the project team, cooperations, advisory board.</msg>
   <msg key="getInvolved">Contribute</msg>
   <msg key="happyness">Thank you for your interest. If you have any questions regarding our project, please contact us at:</msg>
   <msg key="sourceCode">Source Code</msg>
@@ -125,6 +126,8 @@
   <msg key="1stEd">First edition</msg>
   <msg key="thisEd">This edition</msg>
   <msg key="extent">Extent, format</msg>
+  <msg key="partOfMultivol">Part of a multivolume work</msg>
+  
   <!--<msg key="dateOfOrigin">Year of publication (original source)</msg>-->
   <msg key="details">Catalogue Record</msg>
   <msg key="facsimiles">Facsimiles</msg>
@@ -146,7 +149,8 @@
     are encoded according to the specifications of the Text Encoding Initiative (TEI); for further information, please 
     refer to the </msg>
   <msg key="series">Series</msg>
-  <msg key="alphaEditors">Editors (in alphabetical order)</msg>
+  <msg key="techEditors">Technical editing</msg>
+  <msg key="scholEditors">Scholarly editing</msg>
   <msg key="editors">Editors</msg>
   <msg key="editionSeries">The School of Salamanca. A Digital Collection of Sources</msg>
   <msg key="editorsInChief">Series directors</msg>
@@ -204,7 +208,7 @@
   <!--search-->
   <msg key="all">All</msg>
   <msg key="global">All data sources</msg>
-  <msg key="fulltext">fulltext</msg>
+  <msg key="fulltext">full text</msg>
   <msg key="headings">headings</msg>
   <msg key="heading">heading</msg>
   <msg key="head">heading</msg>
@@ -217,7 +221,7 @@
   <msg key="hit">hit</msg>
   <msg key="hits">Hits</msg>
   <msg key="lemma">lemma</msg>
-  <msg key="corpus">works</msg>
+  <msg key="corpus">Works</msg>
   <msg key="dictionarySearch">Dictionary</msg>
   <msg key="dictionaryEntries">Dictionary Entries</msg>
   <msg key="WPMetadata">abstract, keywords, etc.</msg>
@@ -231,6 +235,8 @@
   <msg key="display">display</msg>
   <msg key="prev">previous</msg>
   <msg key="next">next</msg>
+  <msg key="prevWorks">Preceding works</msg>
+  <msg key="nextWorks">Following works</msg>
   <msg key="mainText">main text</msg>
   <msg key="everythingDesc">Search in works, in biographical and conceptual dictionary articles and in abstracts and keywords of working papers.</msg>
   <msg key="corpusDesc">Search the full text of all works.</msg>
@@ -240,6 +246,7 @@
   <msg key="dictDesc">Search the full text of all dictionary entries.</msg>
   <msg key="entriesDesc">Search the headings of dictionary entries.</msg>
   <msg key="wpDesc">Search in abstracts and metadata of working papers.</msg>
+  <msg key="sphinxHelp">Need help?</msg>
   
   
   <!--common-->
@@ -274,7 +281,7 @@
   
   <msg key="authorsNotice">
     Biographic articles on authors from the collection of sources of the project "The School of Salamanca" 
-    will be successively published on this page (presumably starting in 2019).</msg>
+    will be successively published on this page (presumably starting in 2020).</msg>
   
   <!--work-->
   <msg key="text">Text</msg>
@@ -303,6 +310,31 @@
   <msg key="citeUp">Cite</msg>
   <msg key="citeThisWork">Cite this work</msg>
   <msg key="accessedDate">Accessed</msg>
+  <msg key="ebook">E-book</msg>
+  <msg key="citeWork">Copy citation recommendation for this work</msg>
+  <msg key="linkWork">Copy link to this work</msg>
+  <msg key="txtExp">Export plain text</msg>
+  <msg key="copyLink">Copy link</msg>
+  <msg key="copyCit">Copy citation</msg>
+  <!-- toolboxes for single text units: -->
+  <msg key="txtExpShort">Export text</msg>
+  <msg key="teiExpShort">Export TEI</msg>
+  <msg key="openToolboxSect">Open toolbox for this section</msg>
+  <msg key="openToolboxPara">Open toolbox for this paragraph</msg>
+  <msg key="openToolboxNote">Open toolbox for this note</msg>
+  <msg key="citeSect">Copy citation recommendation for this section</msg>
+  <msg key="citePara">Copy citation recommendation for this paragraph</msg>
+  <msg key="citeNote">Copy citation recommendation for this note</msg>
+  <msg key="linkSect">Copy link to this section</msg>
+  <msg key="linkPara">Copy link to this paragraph</msg>
+  <msg key="linkNote">Copy link to this note</msg>
+  <msg key="teiExpSect">Export section as TEI XML</msg>
+  <msg key="teiExpPara">Export paragraph as TEI XML</msg>
+  <msg key="teiExpNote">Export note as TEI XML</msg>
+  <msg key="txtExpSect">Export section as plain text (TXT)</msg>
+  <msg key="txtExpPara">Export paragraph as plain text (TXT)</msg>
+  <msg key="txtExpNote">Export note as plain text (TXT)</msg>
+  
    
   <!--news-->
   <msg key="more">more</msg>
@@ -324,7 +356,7 @@
   
   <!-- dictionary -->
   <msg key="dictUnderConstruction">The Dictionary of the School of Salamanca’s juridical-political language is going to be found here: approx. 200 entries with Latin and Spanish lemmata, taken directly from the sources.
-    The entries will be published successively, beginning in 2019.</msg>
+    The entries will be published successively, beginning in 2020.</msg>
   
   
   <!-- general language -->
@@ -349,10 +381,87 @@
   <msg key="furtherInformationTitle">Further Information</msg>
   <msg key="listOfSources">List of all sources</msg>
   
+  <!-- project participants -->
+  <msg key="participantsTitle">Project Team and Consultants</msg>
+  <msg key="projectTeamConsultants">Project Team and Consultants</msg>
+  <msg key="projectDirectors">Project Directors</msg>
+  <msg key="projectTeam">Project Team</msg>
+  <msg key="projectAdvBoard">Scientific Advisory Board</msg>
+  <msg key="projectCooperators">Co-operation Partners</msg>
+  <msg key="projectFormer">Former Team Members</msg>
+  <msg key="phoneAbbr">Tel.</msg>
+  <msg key="faxAbbr">Fax</msg>
+  <msg key="email">Email</msg>
+  <msg key="cv">Curriculum Vitae</msg>
+  <msg key="researchInterests">Research Interests</msg>
+  <msg key="selectedPublications">Publications (Selection)</msg>
+  <msg key="toOverview">Overview of project participants</msg>
+  <msg key="participantsContrib">Contribution to the Digital Collection of Sources</msg>
+  
   <!-- general language abbreviations, conjunctions, phrases, etc. -->
   <msg key="inLow">in</msg>
   <msg key="editedByAbbrLow">ed. by</msg>
+  <msg key="copy">Copy</msg>
   
   
+  <!-- div, milestone, element types for node index derivatives -->
+  <msg key="tei-div-additional">Addendum</msg>
+  <msg key="tei-div-administrative">Administrative</msg>
+  <msg key="tei-div-article">Article</msg>
+  <msg key="tei-div-book">Book</msg>
+  <msg key="tei-div-chapter">Chapter</msg>
+  <msg key="tei-div-colophon">Colophon</msg>
+  <msg key="tei-div-source">Source</msg>
+  <msg key="tei-div-commentary">Commentary</msg>
+  <msg key="tei-div-contents">Contents</msg>
+  <msg key="tei-div-corrigenda">Corrigenda</msg>
+  <msg key="tei-div-dedication">Dedication</msg>
+  <msg key="tei-div-disputation">Disputatio</msg>
+  <msg key="tei-div-doubt">Dubium</msg>
+  <msg key="tei-div-entry">Lemma</msg>
+  <msg key="tei-div-foreword">Foreword</msg>
+  <msg key="tei-div-gloss">Gloss</msg>
+  <msg key="tei-div-index">Index</msg>
+  <msg key="tei-div-lecture">Relectio</msg>
+  <msg key="tei-div-part">Pars</msg>
+  <msg key="tei-div-preface">Preface</msg>
+  <msg key="tei-div-privileges">Privileges</msg>
+  <msg key="tei-div-question">Quaestio</msg>
+  <msg key="tei-div-section">Section</msg>
+  <msg key="tei-div-segment">Sectio</msg>
+  <msg key="tei-div-title">Titulus</msg>
+  <msg key="tei-div-law">Lex</msg>
+  <msg key="tei-div-partida">Partida</msg>
+  <msg key="tei-ms-article">Art.</msg>
+  <msg key="tei-ms-number">Num.</msg>
+  <msg key="tei-ms-section">Section</msg>
+  <msg key="tei-front">Front Matter</msg>
+  <msg key="tei-back">Back Matter</msg>
+  <msg key="tei-argument">Summary</msg>
+  <msg key="tei-p">Paragraph</msg>
+  <msg key="tei-signed">Signature</msg>
+  <msg key="tei-head">Heading</msg>
+  <msg key="tei-table">Table</msg>
+  <msg key="tei-label">Titel</msg>
+  <msg key="tei-titlePage">Title Page</msg>
+  <msg key="tei-note">Note</msg>
+  <msg key="tei-list">List</msg>
+  <msg key="tei-item">Item</msg>
+  <msg key="tei-lg">Poem</msg>
+  <msg key="tei-text-work_volume">Volume</msg>
+  <msg key="tei-generic">Passage</msg>
+  
+  <!-- stats -->
+  <msg key="editFacsLow">digitally edited print pages</msg>
+  <msg key="editFacsUp">Digitally Edited Print Pages</msg>
+  <msg key="digiFacsLow">digitized facsimiles</msg>
+  <msg key="digiFacsUp">Digitized Facsimiles</msg>
+  <msg key="charsUp">Characters</msg>
+  <msg key="tokensLow">tokens</msg>
+  <msg key="tokensUp">Tokens</msg>
+  <msg key="wordsLow">words</msg>
+  <msg key="wordsUp">Words</msg>
+  <msg key="wordFormsLow">word forms</msg>
+  <msg key="wordFormsUp">Word Forms</msg>
   
 </catalogue>

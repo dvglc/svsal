@@ -9,32 +9,38 @@
     src: url('../fonts/cardo/cardo104s-webfont.eot'); /* Embedded font type required by IE 8 */
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardo104s-webfont.woff'); /* Embedded font type used by other browsers */
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardob101-webfont.eot');
     font-weight: bold;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardob101-webfont.woff');
     font-weight: bold;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardoi99-webfont.eot');
     font-style: italic;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardoi99-webfont.woff');
     font-style: italic;
+    font-display: swap;
 }
 /* 2. Junicode
       URL: http://junicode.sourceforge.net/
@@ -44,44 +50,52 @@
     src:url("../fonts/junicode/junicode.eot");
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode.woff");
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bold.eot");
     font-weight:bold;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bold.woff");
     font-weight:bold;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-italic.eot");
     font-style:italic;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-italic.woff");
     font-style:italic;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bolditalic.eot");
     font-weight:bold;
     font-style:italic;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bolditalic.woff");
     font-weight:bold;
     font-style:italic;
+    font-display: swap;
 }
 /* 3. Andron (A. Stötzner, Koop. m. MUFI)
       URL: http://www.mufi.info/fonts/#Andron
@@ -89,10 +103,12 @@
 @font-face{
     font-family:Andron;
     src:url("../fonts/andron/andron-scriptor-web.eot");
+    font-display: swap;
 }
 @font-face{
     font-family:Andron;
     src:url("../fonts/andron/andron-scriptor-web.woff");
+    font-display: swap;
 }
 
 
@@ -356,6 +372,198 @@ li.cardoStyleLi {
     }
 }
 
+/* ------------------------------------------------------------------ */
+
+
+/* Essential text areas, to be rendered as "columns" from left to right:
+ * - teasers: .section-title -> positioned relative to the main area (left) & hidden in smaller-screen view
+ * - pagination & image links: .pageNumbers -> positioned relative to the main area (left)
+ * - main area: .hauptText, .titlePage, .sec-titlePage (don't need any relative positioning)
+ * - marginals: .marginal -> -> positioned relative to the main area (right)
+ * Additionally, there are citation toolboxes (.sal-toolbox) in the main and marginal area 
+ * that are always slightly offset to the left, relative to *their* immediate container (.hauptText, .marginal, etc.)
+*/
+
+/*.summary_title {
+    float: left;
+    clear: left;
+    position: relative;
+    width: 17.5rem;
+    margin-left:-33rem;
+	line-height: 1.6;
+    font-family: Helvetica, Arial, sans-serif;
+	vertical-align: baseline;
+    font-size: initial;
+    bottom: -0.55em;
+}*/
+
+.pageNumbers {
+    display: inline-block;
+    position: absolute;
+    text-align:left;
+    width: 18%;
+    left:-20%;
+}
+.sal-toolbox {
+    display: inline-block;
+    position: absolute;
+    left: -2.5%;
+}
+
+
+.sal-toolbox-title {
+    display: table-cell;
+    padding-right:0.8rem;
+}
+
+.sal-toolbox-marginal {
+    display:table-cell;
+    visibility: hidden;
+    padding-right:0.3em;
+}
+.marginal:hover .sal-toolbox-marginal {
+    visibility: visible;
+    transition:display 0.7s linear;
+}
+.sal-toolbox-body:hover .sal-toolbox-marginal {
+    visibility: visible;
+}
+
+/* Hover animations with citation toolboxes */
+.sal-toolbox-marginal:hover ~ .marginal-body,
+.sal-toolbox:hover ~ .heading-text,
+.sal-toolbox:hover ~ .titlePage-body,
+.sal-toolbox:hover ~ .hauptText-body,
+.sal-toolbox-title:hover ~ .section-title-body {
+    background-color: #F0F0F0; /* #F5F5F5 */
+    transition: background-color 0.2s linear;
+}
+.sal-toolbox a,
+.sal-toolbox-title a,
+.sal-toolbox-marginal a {
+    color: #B0C4DE !important;
+}
+.sal-toolbox:hover a,
+.sal-toolbox-marginal:hover a,
+.sal-toolbox-title:hover a {
+    color: #102873 !important;
+    transition: color 0.2s linear;
+}
+
+.marginal-body {
+    display:table-cell;
+    text-align:left;
+    font-size: 20px !important; 
+    font-style: normal !important;
+    font-weight: normal !important;
+    width:32rem;
+}
+.sal-toolbox-body {
+    display:none;
+}
+.sal-toolbox-body .popover-content { /* overwriting Bootstrap settings here */
+    padding: 3px;
+}
+
+div.sal-tb-btn {
+    font-size:16px !important;
+    display:block;
+}
+
+.sal-cite-toggle button {
+    margin-left:40%;
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+    color: #102873 !important;
+    outline: none;
+    height:1.5em;
+}
+
+.sal-cite-toggle button:hover {
+    background-color: #E8E8E8 !important;
+    transition: color 0.2s linear;
+}
+
+.sal-cite-toggle > * {
+    margin:0.3em;
+}
+.sal-cite-input {
+    width:95%;
+}
+
+.marginal {
+    float: right;
+	clear: right;
+	margin-right: -49%;
+    padding: 5px;
+	line-height: 1.6;
+	text-indent: 0;
+	text-align: left;
+	width:45%;
+    display:table;
+}
+
+/* Section titles */
+.section-title-body {
+    display:table-cell;
+    width:90%;
+    font-size: 18px !important; 
+    font-style: normal !important;
+    font-weight: normal !important;
+}
+.section-title-text {
+    display:inline;
+}
+.section-title {
+    float: left;
+	clear: left;
+	line-height: 1.6;
+	text-indent: 0;
+	font-family: Helvetica, Arial, sans-serif;
+	text-align: left;
+	width: 34%;
+    margin-left:-56%;
+    display:table;
+}
+.section-title p.collapse[aria-expanded="false"] {
+    display: block;
+    height: 1.6em !important;
+    overflow: hidden;
+}
+.section-title p.collapsing[aria-expanded="false"] {
+    height: 1.6em !important;
+}
+.section-title a:not(.collapsed) {
+    text-decoration: none;
+    color: black;
+}
+.section-title a:not(.collapsed) .edited {
+    color:#707070;
+}
+.section-title a:not(.collapsed) .original {
+    color:#993333;
+}
+.section-title a.collapsed:after {
+    content: '...⌄';
+    margin-top:-1em;
+    position:absolute;
+}
+/*.sal-section-title {
+    float: left;
+    clear: left;
+    position: relative;
+    width: 17.5rem;
+    margin-left:-33rem;
+	line-height: 1.6;
+    font-family: Helvetica, Arial, sans-serif;
+	vertical-align: baseline;
+    font-size: initial;
+    bottom: -0.55em;
+}*/
+
+
+/* ------------------------------------------------------------------ */
 
 /* Classes */
 
@@ -502,11 +710,49 @@ a .edited, a .expan, a .reg, a .corr{
     font-size:23px;
 }
 
+.sal-tb-a > .fa-link {
+    font-size:20px;
+}
+.sal-tb-btn button {
+    margin-left:-0.5em;
+    border: none;
+    background-color: transparent;
+    color: #102873 !important;
+    outline: none;
+}
+.sal-tb-btn:hover {
+    background-color: #E8E8E8 !important;
+    transition: color 0.2s linear;
+}
+
+.sal-toolbox-body i {
+    width:1em;
+}
+span.copy-alert {
+    position:absolute; 
+    white-space: nowrap;
+    display:inline-block;
+    background-color: #404040;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 3px;  
+    opacity:0.9;
+    font-size:90%;
+}
+
 .hauptText .signed {
     font-size:0.9em !important;
     text-align:right !important;
     font-style: italic;
     padding-top:0.3em;
+}
+
+.hauptText .argument {
+    font-size:1.0em !important;
+    text-align:left !important;
+    font-style:italic;
+    padding-top:0.2em;
 }
 
 .form-inline > .form-group {
@@ -547,58 +793,43 @@ a .edited, a .expan, a .reg, a .corr{
     display:block;
 }
 
-.list-index-head {
+.list-index-head, .list-default-head {
     font-size:27px !important;
     font-weight:bold;
 }
-.list-index-item {
+.list-index-item, .list-default-item {
     font-size:20px !important;
-}
-
-.marginal {
-	float: right;
-	clear: right;
-	margin-right: -51%;
-	padding: 5px;
-	line-height: 1.6;
-    font-size: 20px !important; 
-    font-style: normal !important;
-    font-weight: normal !important;
-	text-indent: 0;
-	text-align: justify;
-	width:45%;
 }
 
 .note-label {
     font-style: italic;
     display:inline;
 }
-
 .note-paragraph {
     display:inline;
 }
-
 .marginal p.collapse[aria-expanded="false"] {
     display: block;
     height: 1.6em !important;
     overflow: hidden;
 }
-
 .marginal p.collapsing[aria-expanded="false"] {
     height: 1.6em !important;
 }
-
 .marginal a:not(.collapsed) {
     text-decoration: none;
     color: black;
 }
-
 .marginal a:not(.collapsed) .edited {
     color:#707070;
 }
-
 .marginal a:not(.collapsed) .original {
     color:#993333;
+}
+.marginal a.collapsed:after {
+    content: '...⌄';
+    margin-top:-1em;
+    position:absolute;
 }
 
 a .original {
@@ -607,12 +838,6 @@ a .original {
 
 .simple-char {
     color:inherit;
-}
-
-.marginal a.collapsed:after {
-    content: '...⌄';
-    margin-top:-1em;
-    position:absolute;
 }
 
 span.gap:after {
@@ -631,17 +856,6 @@ span.label-inline {
     font-weight: bold;
     font-size:28px !important;
     padding:0.5em;
-}
-
-.pagination, .pageNumbers {
-	float: left;
-/*	margin-left: -12%;*/
-    margin-left: -18%;
-/* 	margin-top: -5.1%; */
-/*  padding-top: 5.8%; */
-    display: block;
-/*    font-size: large;*/
-      
 }
 
 /*.page-numbers {
@@ -672,12 +886,23 @@ hr.ornament {
 
 .poem {
     font-style:italic;
-    font-size:1.5em !important;
+    font-size:23px !important;
 /*    padding-bottom:3em !important;*/
     text-align: left !important;
 }
 .poem-head {
-    font-size:1.5em;
+    font-size:26px;
+    text-align: left !important;
+}
+
+.marginal .poem {
+    font-style:italic;
+    font-size:19px !important;
+/*    padding-bottom:3em !important;*/
+    text-align: left !important;
+}
+.marginal .poem-head {
+    font-size:17px;
     text-align: left !important;
 }
 
@@ -723,27 +948,29 @@ hr.ornament {
    /* text-indent:1em;*/
 }
 
-.summary_title {
-	float: left;
-    clear: left;
-	margin-left: -49%;
-	line-height: 1.6;
-    font-family: Helvetica, Arial, sans-serif;
-	/*font-size: 1.4em;*//* this is a css 3 property and it means relative to the fontsize of the document root, not the current parent! */
-/*	text-align: justify; */
-	/*width:36%;*/
-	width:36%;
-	vertical-align: baseline;
-    /*font-size: 1.0em;*/
-    font-size: initial;
-    position: relative;
-    bottom: -0.55em;
-}
-
 table {
     font-size: 1.15em;
 }
 
+span.sal-unclear:after {
+    color:#993333;
+    content: '[?]';
+    font-style: italic;
+}
+
+span.sal-unclear-text {
+    color:#993333;
+    border-bottom: 2px dotted #993333;
+}
+
+/* Tables */
+.hauptText table {
+    font-size:0.9em;
+}
+table td {
+    vertical-align:top;
+    text-align:left;
+}
 .table-label {
     font-weight:bold;
     padding-right:0.9em;
@@ -785,6 +1012,11 @@ ul.toc-sub {
     margin-left: -2%;
 }
 
+li.list-paragraph {
+    list-style-type: none; 
+    /*  or  list-style: none; ? */
+}
+
 /*ul.cardoStyleUl {
     font-family: 'Junicode', 'Cardo', 'Andron', 'Cabin', sans-serif;
     font-size: initial;
@@ -792,6 +1024,11 @@ ul.toc-sub {
 
 span.unsichtbar, .unsichtbar {
     display:none !important;
+}
+
+span.sal-section-teaser{
+    padding-left:0.5em;
+    display:block;
 }
 
 .visible {
@@ -1106,5 +1343,45 @@ CSS-Solution from http://stackoverflow.com/questions/18192082/bootstrap-3-navbar
     background-color: #ccc;
 }
 
-/* citation anchor test */
-
+/* Dropdown submenu */
+.dropdown-submenu {
+    position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+.dropdown-submenu.pull-left {
+    float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}

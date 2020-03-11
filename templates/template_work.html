@@ -4,15 +4,15 @@
         <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"/> -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="author" content=""/>
-        <meta name="description" data-template="config:meta-description" content=""/>
-        <title data-template="config:meta-title"/>
-        <link rel="canonical" data-template="config:canonical-url"/>
-        <link rel="alternate" data-template="config:hreflang-url"/>
-        <link rel="alternate" data-template="config:rdf-url"/>
-        <link rel="alternate" data-template="config:iiif-url"/>
-        <link rel="first" data-template="config:firstLink"/>
-        <link rel="prev" data-template="config:prevLink"/>
-        <link rel="next" data-template="config:nextLink"/>
+        <meta name="description" data-template="gui:metaDescription" content=""/>
+        <title data-template="gui:metaTitle"/>
+        <link rel="canonical" data-template="gui:canonicalUrl"/>
+        <link rel="alternate" data-template="gui:hreflangUrl"/>
+        <link rel="alternate" data-template="gui:rdfUrl"/>
+        <link rel="alternate" data-template="gui:iiifUrl"/>
+        <link rel="first" data-template="gui:firstLink"/>
+        <link rel="prev" data-template="gui:prevLink"/>
+        <link rel="next" data-template="gui:nextLink"/>
 
         <!-- ==== CSS  ==== -->
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
@@ -55,8 +55,8 @@
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <!-- top row with navigation buttons -->
             <div class="container">
-                <a data-template="config:logo"/> <!-- SvSal-claim, Toggle Boxes, extended menu) -->
-                <div data-template="config:app-header"/> <!-- General Menu (Works, Dictionary, Proj. description etc.) -->
+                <a data-template="gui:logo"/> <!-- SvSal-claim, Toggle Boxes, extended menu) -->
+                <div data-template="gui:header"/> <!-- General Menu (Works, Dictionary, Proj. description etc.) -->
             </div>
         </div>
         <!-- Work-UI (Toggle Boxes, extended menu) -->
@@ -83,77 +83,71 @@
 
         <!-- ==== Scroll an anchor into view if we have one ==== -->
         <script type="text/javascript">
-            $('a').not('.note-teaser')
+            function myScrollIntoView(targetId) {
+/*
+                $(targetId)[0].scrollIntoView(true, {behavior: 'smooth'});
+                var scrolledY = window.scrollY;
+                if(scrolledY){
+                  window.scroll(0, scrolledY - $(".navbar-fixed-top").outerHeight(true) - 50);
+                };
+                if($(targetId).nodeName == "A") {
+                    $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 1200 );
+                } else {
+                    $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 1200 );
+                }
+*/
+                $offset = $(targetId).offset().top;
+                console.log("$('" + targetId + "').offset().top = " + $offset + ".")
+                goHere = $offset - 80;
+                console.log("Go to " + goHere + ".")
+                $("html, body").animate({scrollTop: goHere}, 800, 'swing', function () {
+                                $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 1200 );
+                            });
+                
+            }
+/*
+            $('.sal-toolbox-marginal, .sal-toolbox-title, .sal-toolbox')
                 .filter(function() {
-//                    console.log("Click on a@href=" + $(this).attr('href') + '... (window.location.href being ' + window.location.href + '.)');
-//                    console.log((window.location.origin + window.location.pathname + window.location.search
-//                             == 
-//                             this.href.split('#')[0]
-//                            ) &amp;&amp; (this.href.indexOf('#') !== -1).toString());
-                    return  ((window.location.origin + window.location.pathname + window.location.search
-                             == 
-                             this.href.split('#')[0]
-                            ) &amp;&amp; (this.href.indexOf('#') !== -1));
-                }).click(function(event){
-//                    console.log("Click on a@href=" + $(this).attr('href') + '...')
+                    console.log("Click on a@href=" + $(this).attr('href') + '... (window.location.href being ' + window.location.href + '.)');
+                    console.log((window.location.origin + window.location.pathname + window.location.search == this.href.split('#')[0]) &amp;&amp; (this.href.indexOf('#') !== -1).toString());
+                    return     ((window.location.origin + window.location.pathname + window.location.search == this.href.split('#')[0]) &amp;&amp; (this.href.indexOf('#') !== -1));
+                })
+                .click(function(event){
+                    console.log("Click on a@href=" + $(this).attr('href') + '...')
                     z = $(this).attr('href').slice($(this).attr('href').indexOf('#'))
-//                    console.log("anchor=" + z + '...')
+                    console.log("anchor=" + z + '...')
                     if ($(z).length != 0) {
                         console.log("Going locally to " + z + '...')
                         myScrollIntoView(z);
                         event.preventDefault();
                     }
                 });
-//            $('a[href*="#"]').click(function(event){
-//                console.log("Click on a@href=" + $(this).attr('href') + '...')
-//                z = $(this).attr('href').slice($(this).attr('href').indexOf('#'))
-//                console.log("anchor =" + z + '...')
-//                if ($(z).length != 0) {
-//                    console.log("Going locally to " + z + '...')
-//                    myScrollIntoView(z);
-//                    event.preventDefault();
-//                }
-//            });
-            function myScrollIntoView(targetId) {
-                $(targetId)[0].scrollIntoView(true);
-                var scrolledY = window.scrollY;
-                if(scrolledY){
-                  window.scroll(0, scrolledY - $(".navbar-fixed-top").outerHeight(true) - 50);
-                };
-                if($(targetId).nodeName == "A") {
-                    $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                    $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                    $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                } else {
-                    $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                    $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                    $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 700 );
+*/
+            $('a[href*="#"]').click(function(event){
+                console.log("Click on a@href=" + $(this).attr('href') + '...')
+                z = $(this).attr('href').slice($(this).attr('href').indexOf('#'))
+                console.log("anchor =" + z + '...')
+                if ($(z).length != 0) {
+                    console.log("Going locally to " + z + '...')
+                    myScrollIntoView(z);
+                    event.preventDefault();
                 }
-//                var $offset = $(targetId).offset().top;
-//                console.log("$('" + targetId + "').offset().top = " + $offset + ".")
-//                goHere = $offset - 80;
-//                console.log("Go to " + goHere + ".")
-//                $('#wrapperWork').animate({scrollTop: goHere}, 800, 'swing', function () {
-//                                $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-//                                $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-//                                $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-//                            });
-            }
+            });
         </script>
 
         <!-- ==== Toggle diplomatic/constituated textmode ==== -->
         <script type="text/javascript" src="resources/js/sal-common.js"/>
-        <script type="text/javascript">
+        <!--<script type="text/javascript">
 //            $(document).ready(function() {
 //                if (window.location.search.match(/mode=((orig)|(edit))/i)) { applyMode(); }
 //            });
-        </script>
+        </script>-->
 
         <!-- ==== Show GUI-Nav when scolling to top ==== -->
         <script type="text/javascript">
-//            $(document).ready(function () {
-//                $(".navbar-white").autoHidingNavbar().autoHidingNavbar('setShowOnBottom', false).autoHidingNavbar('setAnimationDuration', 400);
-//            });
+            $(document).ready(function () {
+                $(".navbar-white").autoHidingNavbar().autoHidingNavbar('setShowOnBottom', false).autoHidingNavbar('setAnimationDuration', 400);
+            });
         </script>
 
         <!-- ==== InfiniteAjaxScroll for progressive enhancement ==== -->
@@ -168,7 +162,7 @@
                 delay:            1
             });
             ias.extension(new IASSpinnerExtension());
-            ias.extension(new IASTriggerExtension({ offset: 50, textPrev:   '<i18n:text key="loadPrev">Lade vorausgehende Textpassagen</i18n:text>' }));
+            ias.extension(new IASTriggerExtension({ offset: 50, textPrev: '<i18n:text key="loadPrev">Lade vorausgehende Textpassagen</i18n:text>' }));
             ias.extension(new IASPagingExtension());
             ias.extension(new IASHistoryExtension({ prev: ".previous" }));
             ias.on('scroll', function(pageNum, scrollOffset, url) {
@@ -203,7 +197,8 @@
             });
             ias.on('rendered', function(items){                                 // Callback function to add functionality to newly loaded elements (those functions are mostly copied from below).
                                                                                 // 1. Refresh Popover Boxes...
-                $('[data-rel="popover"]')
+                    /*
+                    $('[data-rel="popover"]')
                     .popover({ 
                         trigger:    'click',
                         placement:  'bottom',
@@ -212,7 +207,24 @@
                         content:    function() {return $("#popover-content").html();}
                     })
                     .click(function(e) {e.preventDefault();});
-                                                                                // 2. Refresh ImageViewer Stuff...
+                    */
+                
+                $('[data-rel="popover"]').popover({
+                    trigger:    'click',
+                    animation: 'true',
+                    placement:  'bottom',
+                    container: 'body',
+                    template: '&lt;div class="popover sal-toolbox-body"&gt;&lt;div class="popover-content"&gt;&lt;/div&gt;&lt;/div&gt;',
+                    html:       true,
+                    title:      function() {return $("#popover-head").html();},
+                    content: function(){
+                        toolboxHighlight(this,'on');
+                        return $(this).siblings('.sal-toolbox-body').html()
+                    }
+                    // close popup by clicking outside
+                }).click(function(event) {event.preventDefault();});
+                
+                // 2. Refresh ImageViewer Stuff...
                 $(".pageNo").click(function(event){
                     event.preventDefault();                                     // do not actually go to this url
                     $("#parent").dialog('open');                                // show Viewer with jquery-ui Dialog method
@@ -234,25 +246,6 @@
                 });
             });
         </script>
-        
-        <!-- ==== Citation reference -->
-        <script type="text/javascript">
-            var modal = document.getElementById('citRef');
-            var btn = document.getElementById("citRefBtn");
-            var span = document.getElementsByClassName("closeCitRef")[0];
-            btn.onclick = function() {
-              modal.style.display = "block";
-            }
-            span.onclick = function() {
-              modal.style.display = "none";
-            }
-            window.onclick = function(event) {
-              if (event.target == modal) {
-                modal.style.display = "none";
-              }
-            } 
-        </script>
-        
 
         <!-- ==== Load Paginator content when clicking on dropdown-menu ==== -->
         <script type="text/javascript">
@@ -306,6 +299,13 @@
                     $('#myModal').modal('hide');  
                 });
         </script>
+        
+        <!-- ==== Do not close export menu on click ==== -->
+        <script type="text/javascript">
+            $(document).on('click', '.dropdown-menu.export-options', function (e) {
+                e.stopPropagation();
+            });
+        </script>
 
         <!-- ==== Remember current position on Clicking a language link ==== -->
         <script type="text/javascript">
@@ -335,22 +335,119 @@
 
         <!-- ==== Paragraph popup with link, refresh and print icons ====  -->
         <script type="text/javascript">
-            $('[data-rel="popover"]').popover({ 
+            $('[data-rel="popover"]').popover({
                     trigger:    'click',
+                    animation: 'true',
                     placement:  'bottom',
+                    container: 'body',
+                    template: '&lt;div class="popover sal-toolbox-body"&gt;&lt;div class="popover-content"&gt;&lt;/div&gt;&lt;/div&gt;',
                     html:       true,
                     title:      function() {return $("#popover-head").html();},
-                    content:    function() {return $("#popover-content").html();}
+                    content: function(){
+                        toolboxHighlight(this,'on');
+                        return $(this).siblings('.sal-toolbox-body').html()
+                    }
                     // close popup by clicking outside
                 }).click(function(event) {event.preventDefault();}); // don't jump around to the anchor associated with the span
             $('body').on('click', function (event) {
                 $('[data-rel="popover"]').each(function() {
                     event.preventDefault;
-                    if (!$(this).is(event.target) &amp;&amp; $(this).has(event.target).length === 0 &amp;&amp; $('.popover').has(event.target).length === 0) {
+                    if (!$(this).is(event.target) 
+                        &amp;&amp; $(this).has(event.target).length === 0 
+                        &amp;&amp; $('.popover').has(event.target).length === 0) {
+                        toolboxHighlight(this,'off');
                         $(this).popover('hide');
                     }
                 });
             });
+            function toolboxHighlight(elem, mode) {
+                var target = elem.parentElement.nextElementSibling;
+                if (mode === 'on') {
+                    if (elem.parentElement.className === 'sal-toolbox-marginal') {
+                        elem.style.visibility = 'visible';
+                    }
+                    elem.style.setProperty('color', '#102873', 'important');
+                    target.style.backgroundColor = '#F0F0F0';
+                } else if (mode === 'off') {
+                    elem.style.removeProperty('color');
+                    target.style.backgroundColor = '';
+                    if (elem.parentElement.className === 'sal-toolbox-marginal') {
+                        elem.style.removeProperty('visibility');
+                    }
+                }
+            }
+        </script>
+        
+        <!-- Toolboxes: highlighting and copy functions -->
+        <script type="text/javascript">
+            function copyLink(elem) {
+                var target = elem.parentElement.getElementsByClassName('cite-link')[0];
+                var input = document.createElement('textarea');
+                input.setAttribute('style', 'width:0;height:0;opacity:0;'); // hidden
+                input.textContent = target.textContent;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                copyNotify(elem);
+                document.body.removeChild(input);
+            }
+            function copyCitRef(elem) {
+                var target = elem.parentElement.getElementsByClassName('sal-cite-rec')[0];
+                var input = document.createElement('textarea');
+                input.setAttribute('style', 'display:block; width:0; height:0; opacity: 0;');
+                // construct string to be copied: get pre-rendered work/passage citation strings and insert the current date
+                var v1 = target.getElementsByClassName('cite-rec-body')[0].textContent;
+                var v2 = getI18nAccessString();
+                input.textContent = v1 + ' ' + v2;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                copyNotify(elem);
+                document.body.removeChild(input);
+            }
+            function getI18nAccessString() {
+                var accessed;
+                var date;
+                var lang = getLang();
+                if (!['es', 'de', 'en'].includes(lang)) lang = 'en';
+                var current = new Date();
+                var options = { year: 'numeric', month: 'long', day: 'numeric' };
+                if (lang === 'de'){
+                    accessed = 'Aufgerufen am';
+                    date = current.toLocaleDateString('de-DE', options);
+                } else if (lang === 'es'){
+                    accessed = 'Consultado por última vez el';
+                    date = current.toLocaleDateString('es-ES', options);
+                } else {
+                    accessed = 'Accessed';
+                    date = current.toLocaleDateString('en-GB', options);
+                }
+                return '(' + accessed + ' ' + date + ')';
+            }
+            
+            function copyNotify(elem) {
+                var del = elem.parentElement.getElementsByClassName('.copy-alert')[0];
+                if (typeof variable !== 'undefined' &amp;&amp; variable !== null) {
+                    elem.parentElement.removeChild(del);
+                }
+                var language = getLang();
+                console.log('$lang=' + language);
+                var msg;
+                if (language === 'de') {
+                    msg = 'In die Zwischenablage kopiert'
+                } else if (language === 'es') {
+                    msg = 'Copiado al portapapeles'
+                } else {
+                    msg = 'Copied to clipboard'
+                }
+                var popup = document.createElement('span');
+                popup.setAttribute('class', 'copy-alert');
+                popup.textContent = msg;
+                elem.parentElement.appendChild(popup);
+                setTimeout(function() {
+                    $('.copy-alert').fadeOut(1000);
+                }, 1500);
+            }
         </script>
 
         <!-- ==== Show/Hide HiliteBox ==== -->
@@ -465,7 +562,7 @@
 -->
 
         <div id="parent">
-            <iframe title="Mirador" id="Mirador" src="mirador.html" allowfullscreen="" style="min-width: 99%;height:99%;"/>
+            <iframe title="Mirador" id="Mirador" src="viewer.html" allowfullscreen="" style="min-width: 99%;height:99%;"/>
         </div>
         <script type="text/javascript">
         /**
@@ -493,19 +590,17 @@
          * @return the content of the 'lang' url parameter or a string based on pathname components
          */
         function getLang() {
-            if (getUrlParams('lang').length &gt; 0)
-                return getUrlParams('lang')
-            else if (window.location.href.indexOf("/es/") != -1)
-                return 'es'
-            else if (window.location.href.indexOf("/de/") != -1)
-                return 'de'
-            else
-                return 'en'
+            if (getUrlParams('lang').length &gt; 0 
+                     &amp;&amp; ['de','en','es'].indexOf(getUrlParams('lang').substring(0,2)) &gt;= 0) {
+                return getUrlParams('lang').substring(0,2);
+            }
+            else if (window.location.href.indexOf("/de/") != -1) return 'de';
+            else if (window.location.href.indexOf("/es/") != -1) return 'es';
+            else return 'en';
         };
-
         // Build viewer popup, but don't show it yet (jquery ui config)
 //        $(document).ready(function(){
-//            document.getElementById('Mirador').src = "mirador.html?wid=" + getUrlParams( 'wid' );
+//            document.getElementById('Mirador').src = "viewer.html?wid=" + getUrlParams( 'wid' );
 //            $('#parent').dialog({                                      // define jquery-ui dialogue properties...
 //                position:   {my: "left top", at: "left+5 bottom+40", of: "div.navbar"},
 //                autoOpen:   false,
@@ -529,7 +624,13 @@
 //        });
 
 // Bind events - this needs mirador to be fully initialized. We achieve this by having it called from the iframe html file...
+     // document.getElementById('Mirador').addEventListener("mirador.loaded", miradorLoaded);
+     // document.getElementById('Mirador').contentWindow.MyObjects.myMirador.eventEmitter.subscribe('windowAdded', miradorLoaded);
+     /// document.getElementById('Mirador').contentWindow.addEventListener('mirador.loaded', miradorLoaded());
+        window.addEventListener('message', function(message){ if(message.data.type=="mirador.loaded"){ miradorLoaded(); } });
+
         function miradorLoaded() {
+            console.log("Run miradorLoaded function.");
 
             // If we have a "viewer" URL parameter, do open it 
             if (window.location.search.indexOf("viewer=") != -1) {
@@ -619,21 +720,16 @@
 
             // Bind click event for syncing/scrolling text area
             $('#Mirador').contents().find("#sync").on('click', function(){
-                $canvasId = document.getElementById('Mirador').contentWindow.MyObjects.myMirador.viewer.workspace.windows[0].canvasID
+                var m     = document.getElementById('Mirador').contentWindow.MyObjects.myMirador;
+                $canvasId = m.viewer.workspace.windows[0].canvasID
+                console.log("Mirador's sync button has been clicked on canvasId " + $canvasId + ".");
                 var target = $("a[data-canvas='" + $canvasId +"']");
                 if (target.length) {
-                    console.log('sync button has been clicked on canvasId ' + $canvasId + ', going to #' + target.attr('id'));
-// TODO use myScrollIntoView('#'+ target.attr('id'))...
-                    var $offset = target.offset();                  // Contains .top and .left
-                    $offset.top -= ($(".navbar-white").outerHeight() + 5);
-                    $('html, body').animate({
-                            'scrollTop': $offset.top
-                          }, 800, 'swing', function () {
-                                    target.parent().effect( "highlight", {color:'LightSkyBlue'}, 1000 );
-                                    target.parent().effect( "highlight", {color:'LightSkyBlue'}, 1000 );
-                                });
+                    console.log('Going to #' + target.attr('id'));
+                    myScrollIntoView('#'+ target.attr('id'));
+                    event.preventDefault();
                 } else {
-                    console.log('sync button has been clicked, but the target element for canvasId ' + $canvasId + ' is not here.');
+                    console.log('Target element for canvasId ' + $canvasId + ' is not in DOM.');
                     $.getJSON( 'iiif-in.xql?canvasId=' + $canvasId )
                         .done(function( json ) {
                             realTarget = json[$canvasId];
@@ -742,7 +838,7 @@
                 $('#dropdownMenu1').click(loadPaginatorContent);
 
                 // Initialize Mirador viewer
-                document.getElementById('Mirador').src = "mirador.html?wid=" + getUrlParams( 'wid' );
+                document.getElementById('Mirador').src = "viewer.html?wid=" + getUrlParams( 'wid' );
                 $('#parent').dialog({                                      // define jquery-ui dialogue properties...
                     position:   {my: "left top", at: "left+5 bottom+40", of: "div.navbar"},
                     autoOpen:   false,
