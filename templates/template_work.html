@@ -4,15 +4,15 @@
         <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"/> -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="author" content=""/>
-        <meta name="description" data-template="config:meta-description" content=""/>
-        <title data-template="config:meta-title"/>
-        <link rel="canonical" data-template="config:canonical-url"/>
-        <link rel="alternate" data-template="config:hreflang-url"/>
-        <link rel="alternate" data-template="config:rdf-url"/>
-        <link rel="alternate" data-template="config:iiif-url"/>
-        <link rel="first" data-template="config:firstLink"/>
-        <link rel="prev" data-template="config:prevLink"/>
-        <link rel="next" data-template="config:nextLink"/>
+        <meta name="description" data-template="gui:metaDescription" content=""/>
+        <title data-template="gui:metaTitle"/>
+        <link rel="canonical" data-template="gui:canonicalUrl"/>
+        <link rel="alternate" data-template="gui:hreflangUrl"/>
+        <link rel="alternate" data-template="gui:rdfUrl"/>
+        <link rel="alternate" data-template="gui:iiifUrl"/>
+        <link rel="first" data-template="gui:firstLink"/>
+        <link rel="prev" data-template="gui:prevLink"/>
+        <link rel="next" data-template="gui:nextLink"/>
 
         <!-- ==== CSS  ==== -->
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
@@ -55,8 +55,8 @@
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <!-- top row with navigation buttons -->
             <div class="container">
-                <a data-template="config:logo"/> <!-- SvSal-claim, Toggle Boxes, extended menu) -->
-                <div data-template="config:app-header"/> <!-- General Menu (Works, Dictionary, Proj. description etc.) -->
+                <a data-template="gui:logo"/> <!-- SvSal-claim, Toggle Boxes, extended menu) -->
+                <div data-template="gui:header"/> <!-- General Menu (Works, Dictionary, Proj. description etc.) -->
             </div>
         </div>
         <!-- Work-UI (Toggle Boxes, extended menu) -->
@@ -83,27 +83,46 @@
 
         <!-- ==== Scroll an anchor into view if we have one ==== -->
         <script type="text/javascript">
-            $('.sal-toolbox-marginal')
+            function myScrollIntoView(targetId) {
+/*
+                $(targetId)[0].scrollIntoView(true, {behavior: 'smooth'});
+                var scrolledY = window.scrollY;
+                if(scrolledY){
+                  window.scroll(0, scrolledY - $(".navbar-fixed-top").outerHeight(true) - 50);
+                };
+                if($(targetId).nodeName == "A") {
+                    $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 1200 );
+                } else {
+                    $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 1200 );
+                }
+*/
+                $offset = $(targetId).offset().top;
+                console.log("$('" + targetId + "').offset().top = " + $offset + ".")
+                goHere = $offset - 80;
+                console.log("Go to " + goHere + ".")
+                $("html, body").animate({scrollTop: goHere}, 800, 'swing', function () {
+                                $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 1200 );
+                            });
+                
+            }
+/*
+            $('.sal-toolbox-marginal, .sal-toolbox-title, .sal-toolbox')
                 .filter(function() {
-//                    console.log("Click on a@href=" + $(this).attr('href') + '... (window.location.href being ' + window.location.href + '.)');
-//                    console.log((window.location.origin + window.location.pathname + window.location.search
-//                             == 
-//                             this.href.split('#')[0]
-//                            ) &amp;&amp; (this.href.indexOf('#') !== -1).toString());
-                    return  ((window.location.origin + window.location.pathname + window.location.search
-                             == 
-                             this.href.split('#')[0]
-                            ) &amp;&amp; (this.href.indexOf('#') !== -1));
-                }).click(function(event){
-//                    console.log("Click on a@href=" + $(this).attr('href') + '...')
+                    console.log("Click on a@href=" + $(this).attr('href') + '... (window.location.href being ' + window.location.href + '.)');
+                    console.log((window.location.origin + window.location.pathname + window.location.search == this.href.split('#')[0]) &amp;&amp; (this.href.indexOf('#') !== -1).toString());
+                    return     ((window.location.origin + window.location.pathname + window.location.search == this.href.split('#')[0]) &amp;&amp; (this.href.indexOf('#') !== -1));
+                })
+                .click(function(event){
+                    console.log("Click on a@href=" + $(this).attr('href') + '...')
                     z = $(this).attr('href').slice($(this).attr('href').indexOf('#'))
-//                    console.log("anchor=" + z + '...')
+                    console.log("anchor=" + z + '...')
                     if ($(z).length != 0) {
                         console.log("Going locally to " + z + '...')
                         myScrollIntoView(z);
                         event.preventDefault();
                     }
                 });
+*/
             $('a[href*="#"]').click(function(event){
                 console.log("Click on a@href=" + $(this).attr('href') + '...')
                 z = $(this).attr('href').slice($(this).attr('href').indexOf('#'))
@@ -114,31 +133,6 @@
                     event.preventDefault();
                 }
             });
-            function myScrollIntoView(targetId) {
-                $(targetId)[0].scrollIntoView(true);
-                var scrolledY = window.scrollY;
-                if(scrolledY){
-                  window.scroll(0, scrolledY - $(".navbar-fixed-top").outerHeight(true) - 50);
-                };
-                if($(targetId).nodeName == "A") {
-                    $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 1200 );
-                    //$(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                    //$(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                } else {
-                    $(targetId).effect( "highlight", {color:'LightSkyBlue'}, 1200 );
-                    //$(targetId).effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                    //$(targetId).effect( "highlight", {color:'LightSkyBlue'}, 700 );
-                }
-//                var $offset = $(targetId).offset().top;
-//                console.log("$('" + targetId + "').offset().top = " + $offset + ".")
-//                goHere = $offset - 80;
-//                console.log("Go to " + goHere + ".")
-//                $('#wrapperWork').animate({scrollTop: goHere}, 800, 'swing', function () {
-//                                $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-//                                $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-//                                $(targetId).parent().effect( "highlight", {color:'LightSkyBlue'}, 700 );
-//                            });
-            }
         </script>
 
         <!-- ==== Toggle diplomatic/constituated textmode ==== -->
@@ -404,13 +398,7 @@
                 // construct string to be copied: get pre-rendered work/passage citation strings and insert the current date
                 var v1 = target.getElementsByClassName('cite-rec-body')[0].textContent;
                 var v2 = getI18nAccessString();
-                var v3;
-                if (target.getElementsByClassName('cite-rec-trail')[0]) {
-                    v3 = ', ' + target.getElementsByClassName('cite-rec-trail')[0].textContent;
-                } else {
-                    v3 = '';
-                }
-                input.textContent = v1 + ' ' + v2 + v3;
+                input.textContent = v1 + ' ' + v2;
                 document.body.appendChild(input);
                 input.select();
                 document.execCommand('copy');
@@ -636,7 +624,13 @@
 //        });
 
 // Bind events - this needs mirador to be fully initialized. We achieve this by having it called from the iframe html file...
+     // document.getElementById('Mirador').addEventListener("mirador.loaded", miradorLoaded);
+     // document.getElementById('Mirador').contentWindow.MyObjects.myMirador.eventEmitter.subscribe('windowAdded', miradorLoaded);
+     /// document.getElementById('Mirador').contentWindow.addEventListener('mirador.loaded', miradorLoaded());
+        window.addEventListener('message', function(message){ if(message.data.type=="mirador.loaded"){ miradorLoaded(); } });
+
         function miradorLoaded() {
+            console.log("Run miradorLoaded function.");
 
             // If we have a "viewer" URL parameter, do open it 
             if (window.location.search.indexOf("viewer=") != -1) {
@@ -726,21 +720,16 @@
 
             // Bind click event for syncing/scrolling text area
             $('#Mirador').contents().find("#sync").on('click', function(){
-                $canvasId = document.getElementById('Mirador').contentWindow.MyObjects.myMirador.viewer.workspace.windows[0].canvasID
+                var m     = document.getElementById('Mirador').contentWindow.MyObjects.myMirador;
+                $canvasId = m.viewer.workspace.windows[0].canvasID
+                console.log("Mirador's sync button has been clicked on canvasId " + $canvasId + ".");
                 var target = $("a[data-canvas='" + $canvasId +"']");
                 if (target.length) {
-                    console.log('sync button has been clicked on canvasId ' + $canvasId + ', going to #' + target.attr('id'));
-// TODO use myScrollIntoView('#'+ target.attr('id'))...
-                    var $offset = target.offset();                  // Contains .top and .left
-                    $offset.top -= ($(".navbar-white").outerHeight() + 5);
-                    $('html, body').animate({
-                            'scrollTop': $offset.top
-                          }, 800, 'swing', function () {
-                                    target.parent().effect( "highlight", {color:'LightSkyBlue'}, 1000 );
-                                    target.parent().effect( "highlight", {color:'LightSkyBlue'}, 1000 );
-                                });
+                    console.log('Going to #' + target.attr('id'));
+                    myScrollIntoView('#'+ target.attr('id'));
+                    event.preventDefault();
                 } else {
-                    console.log('sync button has been clicked, but the target element for canvasId ' + $canvasId + ' is not here.');
+                    console.log('Target element for canvasId ' + $canvasId + ' is not in DOM.');
                     $.getJSON( 'iiif-in.xql?canvasId=' + $canvasId )
                         .done(function( json ) {
                             realTarget = json[$canvasId];

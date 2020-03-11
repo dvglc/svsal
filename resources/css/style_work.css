@@ -9,32 +9,38 @@
     src: url('../fonts/cardo/cardo104s-webfont.eot'); /* Embedded font type required by IE 8 */
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardo104s-webfont.woff'); /* Embedded font type used by other browsers */
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardob101-webfont.eot');
     font-weight: bold;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardob101-webfont.woff');
     font-weight: bold;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardoi99-webfont.eot');
     font-style: italic;
+    font-display: swap;
 }
 @font-face {
     font-family:Cardo;
     src: url('../fonts/cardo/cardoi99-webfont.woff');
     font-style: italic;
+    font-display: swap;
 }
 /* 2. Junicode
       URL: http://junicode.sourceforge.net/
@@ -44,44 +50,52 @@
     src:url("../fonts/junicode/junicode.eot");
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode.woff");
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bold.eot");
     font-weight:bold;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bold.woff");
     font-weight:bold;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-italic.eot");
     font-style:italic;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-italic.woff");
     font-style:italic;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bolditalic.eot");
     font-weight:bold;
     font-style:italic;
+    font-display: swap;
 }
 @font-face{
     font-family:Junicode;
     src:url("../fonts/junicode/junicode-bolditalic.woff");
     font-weight:bold;
     font-style:italic;
+    font-display: swap;
 }
 /* 3. Andron (A. Stötzner, Koop. m. MUFI)
       URL: http://www.mufi.info/fonts/#Andron
@@ -89,10 +103,12 @@
 @font-face{
     font-family:Andron;
     src:url("../fonts/andron/andron-scriptor-web.eot");
+    font-display: swap;
 }
 @font-face{
     font-family:Andron;
     src:url("../fonts/andron/andron-scriptor-web.woff");
+    font-display: swap;
 }
 
 
@@ -384,19 +400,20 @@ li.cardoStyleLi {
 .pageNumbers {
     display: inline-block;
     position: absolute;
+    text-align:left;
     width: 18%;
     left:-20%;
 }
 .sal-toolbox {
     display: inline-block;
     position: absolute;
-    left: -3%;
+    left: -2.5%;
 }
 
 
 .sal-toolbox-title {
     display: table-cell;
-    padding-right:0.3rem;
+    padding-right:0.8rem;
 }
 
 .sal-toolbox-marginal {
@@ -435,9 +452,11 @@ li.cardoStyleLi {
 
 .marginal-body {
     display:table-cell;
+    text-align:left;
     font-size: 20px !important; 
     font-style: normal !important;
     font-weight: normal !important;
+    width:32rem;
 }
 .sal-toolbox-body {
     display:none;
@@ -480,7 +499,7 @@ div.sal-tb-btn {
     padding: 5px;
 	line-height: 1.6;
 	text-indent: 0;
-	text-align: justify;
+	text-align: left;
 	width:45%;
     display:table;
 }
@@ -488,6 +507,7 @@ div.sal-tb-btn {
 /* Section titles */
 .section-title-body {
     display:table-cell;
+    width:90%;
     font-size: 18px !important; 
     font-style: normal !important;
     font-weight: normal !important;
@@ -502,8 +522,8 @@ div.sal-tb-btn {
 	text-indent: 0;
 	font-family: Helvetica, Arial, sans-serif;
 	text-align: left;
-	width: 31%;
-    margin-left:-55%;
+	width: 34%;
+    margin-left:-56%;
     display:table;
 }
 .section-title p.collapse[aria-expanded="false"] {
@@ -710,6 +730,7 @@ a .edited, a .expan, a .reg, a .corr{
 }
 span.copy-alert {
     position:absolute; 
+    white-space: nowrap;
     display:inline-block;
     background-color: #404040;
     color: #fff;
@@ -725,6 +746,13 @@ span.copy-alert {
     text-align:right !important;
     font-style: italic;
     padding-top:0.3em;
+}
+
+.hauptText .argument {
+    font-size:1.0em !important;
+    text-align:left !important;
+    font-style:italic;
+    padding-top:0.2em;
 }
 
 .form-inline > .form-group {
@@ -935,6 +963,14 @@ span.sal-unclear-text {
     border-bottom: 2px dotted #993333;
 }
 
+/* Tables */
+.hauptText table {
+    font-size:0.9em;
+}
+table td {
+    vertical-align:top;
+    text-align:left;
+}
 .table-label {
     font-weight:bold;
     padding-right:0.9em;
@@ -974,6 +1010,11 @@ li.toc {
 ul.toc-sub {
     list-style-type: none;
     margin-left: -2%;
+}
+
+li.list-paragraph {
+    list-style-type: none; 
+    /*  or  list-style: none; ? */
 }
 
 /*ul.cardoStyleUl {
